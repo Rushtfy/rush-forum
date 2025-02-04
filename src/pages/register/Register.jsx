@@ -44,7 +44,7 @@ const Register = () => {
                         <input type="email" placeholder='Email' />
                         <input type="password" placeholder='Password' />
                         <button>Sign Up</button>
-                        {error && <span>Error Occurred</span>}
+                        {error && <span style={{color:"red"}}>Something went wrong</span>}
                     </form>
                     <p>Already have an account? <Link style={{color:'#6D54B5'}} to="/login">Log in</Link></p>
                 </div>
