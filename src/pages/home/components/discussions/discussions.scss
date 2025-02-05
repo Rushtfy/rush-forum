@@ -1,0 +1,17 @@
+.discussions {
+    background-color: #0E1113;
+    width: 100%;
+    border-left: 1px solid gray;
+    color: white;
+    height: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #6D54B5;
+}

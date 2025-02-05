@@ -1,6 +1,10 @@
 .header{
-    padding: 15px 0;
-    background-color: #2C2638;
+    height: 8%;
+    background-color: #0E1113;
+    border-bottom: 1px solid gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .headerContainer{
         display: flex;
         align-items: center;
@@ -10,7 +14,7 @@
         .logo{
             display: flex;
             align-items: center;
-            font-size: 20px;
+            font-size: 25px;
             font-weight: 600;
             text-decoration: none;
             color: white;
@@ -33,7 +37,7 @@
                 border-top-left-radius: 10px;
                 border-bottom-left-radius: 10px;
                 border: none;
-                background-color: #3C364C;
+                background-color: #282F33;
                 color: white;
                 &::placeholder{
                     color: gray;

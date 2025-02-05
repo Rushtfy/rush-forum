@@ -1,0 +1,42 @@
+.sidebar{
+    display: inline-block;
+    height: 100%;
+    width: 20%;
+    background-color: #0E1113;
+    .discussionStarterBox{
+        border-bottom: 2px solid gray;
+        width: 90%;
+        margin: 0 auto;
+        padding: 40px 0;
+        button{
+            margin-bottom: 40px;
+            width: 100%;
+            padding: 10px 0;
+            background-color: #6D54B5;
+            border: none;
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        ul{
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            li{
+                list-style: none;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: white;
+                font-weight: 500;
+                font-size: 17px;
+                cursor: pointer;
+            }
+            .test{
+                color: #8972ce;
+            }
+        }
+    }
+}
