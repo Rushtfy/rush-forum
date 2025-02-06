@@ -1,37 +1,36 @@
-.header{
+.header {
     height: 8%;
     background-color: #0E1113;
     border-bottom: 1px solid gray;
     display: flex;
     align-items: center;
     justify-content: center;
-    .headerContainer{
+
+    .headerContainer {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin: 0 auto;
         width: 90%;
-        .logo{
+
+        .logo {
             display: flex;
             align-items: center;
             font-size: 25px;
             font-weight: 600;
             text-decoration: none;
             color: white;
-            .logoHalf{
+
+            .logoHalf {
                 color: #6D54B5;
             }
         }
-        img{
-            width: 50px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
-        }
-        .search{
-            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
+
+        .search {
+            box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
             border-radius: 10px;
-            input{
+
+            input {
                 padding: 12px;
                 width: 600px;
                 border-top-left-radius: 10px;
@@ -39,11 +38,13 @@
                 border: none;
                 background-color: #282F33;
                 color: white;
-                &::placeholder{
+
+                &::placeholder {
                     color: gray;
                 }
             }
-            button{
+
+            button {
                 padding: 12px;
                 border: none;
                 background-color: #6D54B5;
@@ -51,6 +52,49 @@
                 border-top-right-radius: 10px;
                 border-bottom-right-radius: 10px;
                 cursor: pointer;
+            }
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+
+            img {
+                width: 50px;
+                border-radius: 50px;
+                cursor: pointer;
+                box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
+            }
+
+            .dropdownContent {
+                display: none;
+                position: absolute;
+                background-color: #282F33;
+                min-width: 160px;
+                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
+                z-index: 1;
+                right: 0;
+                border-radius: 5px;
+                border: 1px solid #6D54B5;
+                overflow: hidden;
+
+                p {
+                    color: white;
+                    padding: 12px 16px;
+                    text-decoration: none;
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                    cursor: pointer;
+                    &:hover{
+                        background-color: gray;
+                    }
+                }
+            }
+            &:hover{
+                .dropdownContent{
+                    display: block;
+                }
             }
         }
     }

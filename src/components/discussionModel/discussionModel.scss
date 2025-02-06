@@ -1,0 +1,66 @@
+.individualDiscussion{
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 8px;
+    .dicussionContainer{
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        .imageAndDiscussion{
+            display: flex;
+            align-items: start;
+            gap: 10px;
+            img{
+                width: 50px;
+                border-radius: 50px;
+            }
+            .discussionHolder{
+                display: flex;
+                flex-direction: column;
+                justify-content: start;
+                gap: 5px;
+                .nameAndTime{
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    span{
+                        color: gray;
+                        font-size: 13px;
+                    }
+                    .displayName{
+                        color: #6D54B5;
+                    }
+                }
+                .discussionText{
+                    font-size: 18px;
+                }
+                .discussionStatistics{
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    color: gray;
+                    font-size: 13px;
+                    p{
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+                }
+            }
+        }
+        button{
+            background-color: #282F33;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    }
+}
