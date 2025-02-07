@@ -78,11 +78,7 @@ const Discussions = () => {
             </div> */}
             <div>
                 {posts && posts.map((item, index) =>
-                    // <div style={{ border: "1px solid white", borderRadius: "5px", maxWidth: "400px", padding: "10px", margin: "8px" }} key={index}>
-                    //     <p style={{ fontSize: "12px", color: "red" }}>{item.displayName}</p>
-                    //     <p>{item.postText}</p>
-                    // </div>
-                    <DiscussionModel item={item}/>
+                    <DiscussionModel key={index} item={item}/>
                 )}
             </div>
         </div>

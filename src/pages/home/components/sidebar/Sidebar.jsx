@@ -8,7 +8,11 @@ const Sidebar = () => {
         <div className='sidebar'>
             <div className='containerSidebar'>
                 <div className='discussionStarterBox'>
-                    <button>Start a new Discussion</button>
+                    {/* <button>Start a new Discussion</button> */}
+                    <button className="pushable">
+                        <span className="edge"></span>
+                        <span className="front"> Start a new Discussion </span>
+                    </button>
                     <ul>
                         <li className='test'><FontAwesomeIcon icon={faComments} />All discussions</li>
                         <li><FontAwesomeIcon icon={faUsers} />Following</li>
