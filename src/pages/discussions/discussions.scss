@@ -1,0 +1,22 @@
+.discussions {
+    background-color: #212121;
+    width: 83%;
+    color: white;
+    height: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #6D54B5;
+}
+
+@media screen and (max-width: 360px) {
+    .discussions{
+        width: 100%;
+    }
+}

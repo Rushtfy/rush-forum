@@ -196,8 +196,6 @@
     }
 }
 
-
-
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -215,5 +213,15 @@
 
     100% {
         transform: scale(1);
+    }
+}
+
+@media screen and (max-width:360px) {
+    .header{
+        .headerContainer{
+            .search{
+                display: none;
+            }
+        }
     }
 }

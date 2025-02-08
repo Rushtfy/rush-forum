@@ -32,11 +32,12 @@
                         font-size: 13px;
                     }
                     .displayName{
-                        color: #6D54B5;
+                        color: hsl(248, 53%, 58%);
                     }
                 }
                 .discussionText{
                     font-size: 18px;
+                    margin-bottom: 5px;
                 }
                 .discussionStatistics{
                     display: flex;
@@ -47,7 +48,41 @@
                     p{
                         display: flex;
                         align-items: center;
+                        font-weight: 500;
+                    }
+                    .voteCounter{
+                        display: flex;
                         gap: 10px;
+                        background-color: #303233;
+                        padding: 5px 10px;
+                        border-radius: 20px;
+                        color: white;
+                        svg{
+                            font-size: 17px;
+                            padding: 5px;
+                            border-radius: 20px;
+                            transition: .2s;
+                            &:hover{
+                                background-color: #424446;
+                            }
+                        }
+                        p{
+                            font-size: 14px;
+                        }
+                    }
+                    .commentCounter{
+                        display: flex;
+                        gap: 5px;
+                        background-color: #303233;
+                        padding: 5px 10px;
+                        border-radius: 20px;
+                        font-size: 14px;
+                        color: white;
+                        svg{
+                            font-size: 17px;
+                            padding: 5px;
+                            border-radius: 20px;
+                        }
                     }
                 }
             }
@@ -73,5 +108,15 @@
     }
     &:hover{
         box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 1);
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .individualDiscussion{
+        .dicussionContainer{
+            button{
+                display: none;
+            }
+        }
     }
 }
