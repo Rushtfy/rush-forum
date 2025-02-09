@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../components/context/AuthContext'
-import { db } from '../../firebase';
-import { arrayUnion, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
-import './discussions.scss'
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
+import React, { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../components/context/AuthContext';
 import DiscussionModel from '../../components/discussionModel/DiscussionModel';
+import { db } from '../../firebase';
+import './discussions.scss';
 
 const Discussions = () => {
 
@@ -27,13 +27,12 @@ const Discussions = () => {
     useEffect(() => {
         const getPosts = async () => {
             const unsub = await getDocs(collection(db, "userPosts"));
-                let array1 = []
-                setPosts([])
-                unsub.forEach((info) => {
-                    info.data().posts?.map(item => array1.push(item))
-                });
-                // shuffle(array1);
-                setPosts(array1);
+            let array1 = []
+            setPosts([])
+            unsub.forEach((info) => {
+                Object.entries(info.data()).map(item => array1.push(item[1]));
+            });
+            setPosts(array1.sort((a, b) => b.likes.length - a.likes.length));
 
             return () => {
                 unsub();

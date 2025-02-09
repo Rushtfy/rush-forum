@@ -1,13 +1,13 @@
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import React, { useContext, useState } from 'react';
-import './startDiscussion.scss';
-import Header from '../../components/header/Header';
-import Sidebar from '../../components/sidebar/Sidebar';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { AuthContext } from '../../components/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
+import { AuthContext } from '../../components/context/AuthContext';
+import Layout from '../../components/layout/Layout';
+import { db } from '../../firebase';
+import './startDiscussion.scss';
 
 const StartDiscussion = () => {
 
@@ -34,61 +34,59 @@ const StartDiscussion = () => {
 
     const handleSubmit = async () => {
         try {
+            const uniqueID = uuid();
             await updateDoc(doc(db, "userPosts", currentUser.uid), {
-                "posts": arrayUnion({
+                [uniqueID]: {
+                    "id": uniqueID,
                     "ownerUid": currentUser.uid,
                     "title": title,
                     "content": content,
                     "likes": [],
                     "dislikes": [],
                     "comments": []
-                }),
+                },
             });
             navigate('/');
         } catch (error) {
-            alert("Something went wrong");
+            alert(error);
             setError(true);
         }
     }
 
     return (
-        <div className='startDiscussionBody'>
-            <Header />
-            <div className="startDiscussion">
-                <Sidebar />
-                <div className='inputsField'>
-                    <h1>Create Post</h1>
+        <Layout>
+            <div className='inputsField'>
+                <h1>Create Post</h1>
 
-                    <div className="title-input-container">
-                        <div className="input-wrapper">
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                maxLength={maxLength}
-                                placeholder="Title"
-                                className="custom-input"
-                            />
-                        </div>
-                        <span className="char-counter">{title.length}/{maxLength}</span>
-                    </div>
-
-                    <div className="editor-container">
-                        <ReactQuill
-                            value={content}
-                            onChange={setContent}
-                            theme="snow"
-                            modules={modules}
-                            placeholder="Write something..."
+                <div className="title-input-container">
+                    <div className="input-wrapper">
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            maxLength={maxLength}
+                            placeholder="Title"
+                            className="custom-input"
                         />
-                        <div className="editor-buttons">
-                            <button className="save-draft">Save Draft</button>
-                            <button className="post" onClick={handleSubmit}>Post</button>
-                        </div>
+                    </div>
+                    <span className="char-counter">{title.length}/{maxLength}</span>
+                </div>
+
+                <div className="editor-container">
+                    <ReactQuill
+                        value={content}
+                        onChange={setContent}
+                        theme="snow"
+                        modules={modules}
+                        placeholder="Write something..."
+                    />
+                    <div className="editor-buttons">
+                        <button className="save-draft">Save Draft</button>
+                        <button className="post" onClick={handleSubmit}>Post</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </Layout>
     )
 }
 

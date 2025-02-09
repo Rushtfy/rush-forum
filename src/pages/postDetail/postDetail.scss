@@ -1,0 +1,119 @@
+.containerPostDetail {
+    display: flex;
+    align-items: center;
+    padding: 40px 0 0 40px;
+
+    .imageAndDiscussion {
+        display: flex;
+        align-items: start;
+        gap: 10px;
+        margin: 0 auto;
+        width: 50%;
+
+        img {
+            width: 50px;
+            border-radius: 50px;
+        }
+
+        .discussionHolder {
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            gap: 5px;
+            width: 100%;
+            
+            .nameTimeIcon{
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .nameAndTime {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+    
+                    span {
+                        color: gray;
+                        font-size: 13px;
+                    }
+    
+                    .displayName {
+                        color: hsl(248, 53%, 58%);
+                    }
+                }
+
+                svg{
+                    font-size: 20px;
+                    cursor: pointer;
+                    padding: 5px 10px;
+                    border-radius: 20px;
+                    color: white;
+                    transition: .2s;
+                    &:hover{
+                        background-color: #303233;
+                    }
+                }
+            }
+
+            .discussionText {
+                color: white;
+                margin-bottom: 5px;
+            }
+
+            .discussionStatistics {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: gray;
+                font-size: 13px;
+
+                p {
+                    display: flex;
+                    align-items: center;
+                    font-weight: 500;
+                }
+
+                .voteCounter {
+                    display: flex;
+                    gap: 10px;
+                    background-color: #303233;
+                    padding: 5px 10px;
+                    border-radius: 20px;
+                    color: white;
+
+                    svg {
+                        font-size: 17px;
+                        padding: 5px;
+                        border-radius: 20px;
+                        cursor: pointer;
+                        transition: .2s;
+
+                        &:hover {
+                            background-color: #424446;
+                        }
+                    }
+
+                    p {
+                        font-size: 14px;
+                    }
+                }
+
+                .commentCounter {
+                    display: flex;
+                    gap: 5px;
+                    background-color: #303233;
+                    padding: 5px 10px;
+                    border-radius: 20px;
+                    font-size: 14px;
+                    color: white;
+
+                    svg {
+                        font-size: 17px;
+                        padding: 5px;
+                        border-radius: 20px;
+                    }
+                }
+            }
+        }
+    }
+}

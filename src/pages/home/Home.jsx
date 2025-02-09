@@ -8,13 +8,9 @@ import Header from '../../components/header/Header';
 const Home = () => {
 
   return (
-    <div className='homeBody'>
-      <Header/>
-      <div className='home'>
-        <Sidebar />
-        <Discussions />
-      </div>
-    </div>
+    <Layout>
+      <Discussions/>
+    </Layout>
   )
 }
 

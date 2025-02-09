@@ -1,7 +1,11 @@
 .homeBody {
   height: 100%;
+  background-color: #212121;
   .home {
     display: flex;
     height: 92%;
+    main{
+      width: 100%;
+    }
   }
 }

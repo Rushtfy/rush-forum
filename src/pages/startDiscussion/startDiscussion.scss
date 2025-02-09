@@ -1,3 +1,133 @@
+.inputsField {
+    width: 100%;
+    height: 100%;
+    max-height: max-content;
+    padding: 40px;
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    gap: 20px;
+    max-width: max-content;
+
+    h1 {
+        color: white;
+    }
+
+    .title-input-container {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        width: 550px;
+        max-height: max-content;
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #444;
+            background: #111;
+            color: white;
+            border-radius: 15px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.2s ease-in-out;
+
+            &::placeholder {
+                color: #bbb;
+                position: relative;
+            }
+
+            &::placeholder::after {
+                content: "*";
+                color: red;
+                margin-left: 2px;
+            }
+        }
+
+        .char-counter {
+            font-size: 12px;
+            color: #888;
+            position: absolute;
+            right: 10px;
+            bottom: 8px;
+        }
+    }
+
+
+    .editor-container {
+        color: #fff;
+        border-radius: 8px;
+        width: 550px;
+
+        .ql-toolbar {
+            background: #111;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+
+            &.ql-snow {
+                border: 1px solid #444;
+                border-bottom: none;
+            }
+
+            .ql-fill {
+                fill: #bbb;
+            }
+
+            .ql-stroke {
+                stroke: #bbb;
+            }
+
+            .ql-active {
+                .ql-stroke {
+                    stroke: #6D54B5;
+                }
+            }
+        }
+
+        .ql-container {
+            background: #111;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            min-height: 150px;
+
+            &.ql-snow{
+                border: 1px solid #444;
+                border-top: none;
+            }
+        }
+
+        .ql-editor {
+            &::before {
+                color: #bbb !important;
+                font-style: italic;
+            }
+        }
+
+        .editor-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+
+            button {
+                background: #333;
+                color: white;
+                padding: 8px 12px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-left: 5px;
+
+                &:hover {
+                    background: #444;
+                }
+            }
+        }
+    }
+}
 .startDiscussionBody {
     height: 100%;
 
@@ -6,151 +136,17 @@
         height: 92%;
         background-color: #212121;
 
-        .inputsField {
-            width: 100%;
-            height: 100%;
-            max-height: max-content;
-            padding: 40px;
-            display: flex;
-            align-items: start;
-            flex-direction: column;
-            gap: 20px;
-            max-width: max-content;
-
-            h1 {
-                color: white;
-            }
-
-            .title-input-container {
-                display: flex;
-                flex-direction: column;
-                position: relative;
-                width: 550px;
-                max-height: max-content;
-
-                .input-wrapper {
-                    position: relative;
-                    width: 100%;
-                }
-
-                .custom-input {
-                    width: 100%;
-                    padding: 12px 16px;
-                    border: 1px solid #444;
-                    background: #111;
-                    color: white;
-                    border-radius: 15px;
-                    font-size: 16px;
-                    outline: none;
-                    transition: border 0.2s ease-in-out;
-
-                    &::placeholder {
-                        color: #bbb;
-                        position: relative;
-                    }
-
-                    &::placeholder::after {
-                        content: "*";
-                        color: red;
-                        margin-left: 2px;
-                    }
-                }
-
-                .char-counter {
-                    font-size: 12px;
-                    color: #888;
-                    position: absolute;
-                    right: 10px;
-                    bottom: 8px;
-                }
-            }
-
-
-            .editor-container {
-                color: #fff;
-                border-radius: 8px;
-                width: 550px;
-
-                .ql-toolbar {
-                    background: #111;
-                    border-top-left-radius: 20px;
-                    border-top-right-radius: 20px;
-
-                    &.ql-snow {
-                        border: 1px solid #444;
-                        border-bottom: none;
-                    }
-
-                    .ql-fill {
-                        fill: #bbb;
-                    }
-
-                    .ql-stroke {
-                        stroke: #bbb;
-                    }
-
-                    .ql-active {
-                        .ql-stroke {
-                            stroke: #6D54B5;
-                        }
-                    }
-                }
-
-                .ql-container {
-                    background: #111;
-                    border-bottom-left-radius: 20px;
-                    border-bottom-right-radius: 20px;
-                    min-height: 150px;
-
-                    &.ql-snow{
-                        border: 1px solid #444;
-                        border-top: none;
-                    }
-                }
-
-                .ql-editor {
-                    &::before {
-                        color: #bbb !important;
-                        font-style: italic;
-                    }
-                }
-
-                .editor-buttons {
-                    display: flex;
-                    justify-content: flex-end;
-                    margin-top: 10px;
-
-                    button {
-                        background: #333;
-                        color: white;
-                        padding: 8px 12px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        margin-left: 5px;
-
-                        &:hover {
-                            background: #444;
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
 @media screen and (max-width: 360px) {
-    .startDiscussionBody{
-        .startDiscussion{
-            .inputsField{
-                padding: 30px;
-                .title-input-container{
-                    width: 300px;
-                }
-                .editor-container{
-                    width: 300px;
-                }
-            }
+    .inputsField{
+        padding: 30px;
+        .title-input-container{
+            width: 300px;
+        }
+        .editor-container{
+            width: 300px;
         }
     }
 }
