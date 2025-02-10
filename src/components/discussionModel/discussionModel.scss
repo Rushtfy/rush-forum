@@ -137,6 +137,19 @@
     }
 }
 
+.skeletonName {
+    background-image: linear-gradient(90deg,
+            #444 0px,
+            rgba(160, 160, 160, 0.9) 40px,
+            #444 80px);
+    background-size: 300%;
+    background-position: 100% 0;
+    height: 15px;
+    width: 70px;
+    border-radius: .8rem;
+    animation: shimmer 1.5s infinite;
+}
+
 @media screen and (max-width: 360px) {
     .individualDiscussion {
         .dicussionContainer {
@@ -144,5 +157,11 @@
                 display: none;
             }
         }
+    }
+}
+
+@keyframes shimmer {
+    to {
+        background-position: -100% 0;
     }
 }
