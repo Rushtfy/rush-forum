@@ -11,12 +11,24 @@ const DiscussionModel = ({ item }) => {
 
     const { currentUser } = useContext(AuthContext);
     const [name, setName] = useState(null);
+    const [liked, setLiked] = useState(false);
+    const [disliked, setDisliked] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
 
         const getNames = async () => {
             const unsub = setName((await getDoc(doc(db, "users", item.ownerUid))).data().displayName);
+            if(item.likes.includes(currentUser.uid)){
+                setLiked(true);
+            } else {
+                setLiked(false);
+            }
+            if(item.dislikes.includes(currentUser.uid)){
+                setDisliked(true);
+            } else {
+                setDisliked(false);
+            }
 
             return () => {
                 unsub();
@@ -43,17 +55,25 @@ const DiscussionModel = ({ item }) => {
                 const postDislikes = postData[item.id]?.dislikes
 
                 if (postDislikes && postDislikes.includes(currentUser.uid)) {
+                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.remove("liked");
+
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
                         [item.id+".dislikes"]: arrayRemove(currentUser.uid)
                     });
                 }
                 if(postLikes && postLikes.includes(currentUser.uid)){
-                    document.getElementById(item.id).innerHTML = Number(document.getElementById(item.id).innerHTML) - 1;
+                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML) - 1;
+
+                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.remove("liked");
+
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
                         [item.id+".likes"]: arrayRemove(currentUser.uid)
                     });
                 } else {
-                    document.getElementById(item.id).innerHTML = Number(document.getElementById(item.id).innerHTML) + 1;
+                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML) + 1;
+
+                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.add("liked");
+
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
                         [item.id+".likes"]: arrayUnion(currentUser.uid)
                     });
@@ -63,7 +83,8 @@ const DiscussionModel = ({ item }) => {
             }
         } catch (error) {
             alert("Something went wrong!");
-            document.getElementById(item.id).innerHTML = Number(item.likes.length);
+            document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(item.likes.length);
+            document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.remove("liked");
         }
     }
 
@@ -80,16 +101,23 @@ const DiscussionModel = ({ item }) => {
                 const postDislikes = postData[item.id]?.dislikes
 
                 if (postLikes && postLikes.includes(currentUser.uid)) {
-                    document.getElementById(item.id).innerHTML = Number(document.getElementById(item.id).innerHTML) - 1;
+                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML) - 1;
+
+                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.remove("liked");
+
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
                         [item.id+".likes"]: arrayRemove(currentUser.uid)
                     });
                 }
                 if(postDislikes && postDislikes.includes(currentUser.uid)){
+                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.remove("liked");
+
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
                         [item.id+".dislikes"]: arrayRemove(currentUser.uid)
                     });
                 } else {
+                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.add("liked");
+
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
                         [item.id+".dislikes"]: arrayUnion(currentUser.uid)
                     });
@@ -99,12 +127,13 @@ const DiscussionModel = ({ item }) => {
             }
         } catch (error) {
             alert("Something went wrong!");
-            document.getElementById(item.id).innerHTML = Number(item.likes.length);
+            document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(item.likes.length);
+            document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.remove("liked");
         }
     }
 
     return (
-        <div className='individualDiscussion' onClick={goDetail}>
+        <div className='individualDiscussion' onClick={goDetail} id={item.id}>
             <div className='dicussionContainer'>
                 <div className='imageAndDiscussion'>
                     <img src="https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg" alt="profile picuture" />
@@ -116,9 +145,9 @@ const DiscussionModel = ({ item }) => {
                         <p className='discussionText'>{item.title}</p>
                         <div className='discussionStatistics'>
                             <div className='voteCounter'>
-                                <FontAwesomeIcon icon={faArrowUp} onClick={handleUpvote} />
-                                <p id={item.id}>{item.likes.length}</p>
-                                <FontAwesomeIcon icon={faArrowDown} onClick={handleDownvote} />
+                                {liked ? <FontAwesomeIcon icon={faArrowUp} onClick={handleUpvote} className='liked'/> : <FontAwesomeIcon icon={faArrowUp} onClick={handleUpvote} />}
+                                <p>{item.likes.length}</p>
+                                {disliked ? <FontAwesomeIcon icon={faArrowDown} onClick={handleDownvote}  className='liked'/> : <FontAwesomeIcon icon={faArrowDown} onClick={handleDownvote} />}
                             </div>
                             <p className='commentCounter'><FontAwesomeIcon icon={faCommentDots} />{Object.keys(item.comments).length}</p>
                         </div>
