@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
-import './discussionModel.scss'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faReply, faArrowUp, faArrowDown, faCommentDots } from '@fortawesome/free-solid-svg-icons'
-import { arrayRemove, arrayUnion, collection, collectionGroup, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
-import { db } from '../../firebase'
-import { AuthContext } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { faArrowDown, faArrowUp, faCommentDots, faReply } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { arrayRemove, arrayUnion, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { db } from '../../firebase';
+import { AuthContext } from '../context/AuthContext';
+import './discussionModel.scss';
 
 const DiscussionModel = ({ item }) => {
 

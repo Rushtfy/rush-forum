@@ -1,15 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
-import './postDetail.scss';
-import Layout from '../../components/layout/Layout';
-import { useLocation } from 'react-router-dom';
+import { faArrowDown, faArrowUp, faCommentDots, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp, faArrowDown, faCommentDots, faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { AuthContext } from '../../components/context/AuthContext';
-import { arrayUnion, collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import React, { useContext, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
+import { useLocation } from 'react-router-dom';
 import { v4 as uuid } from "uuid";
+import Comments from '../../components/comments/Comments';
+import { AuthContext } from '../../components/context/AuthContext';
+import Layout from '../../components/layout/Layout';
+import { db } from '../../firebase';
+import './postDetail.scss';
 
 const PostDetail = () => {
 
@@ -18,7 +19,7 @@ const PostDetail = () => {
     const { currentUser } = useContext(AuthContext);
 
     const [item, setItem] = useState(itemOld);
-    const [name, setName] = useState("");
+    const [name, setName] = useState(null);
     const [content, setContent] = useState("");
     const [comments, setComments] = useState(null);
 
@@ -39,15 +40,17 @@ const PostDetail = () => {
             const unsub = await getDoc(doc(db, "userPosts", itemOld.ownerUid));
             const unsubTwo = await getDoc(doc(db, "users", itemOld.ownerUid));
             const unsubThree = await getDocs(collection(db, "userPosts"));
+
+
             let array1 = [];
-            setComments(null);
             let commentsObj = {}
+            setComments(null);
             unsubThree.forEach((doc) => {
                 commentsObj = doc.data()?.[itemOld.id]?.comments;
             })
-            Object.entries(commentsObj).map(item => array1.push(item[1]))
-            setComments(array1);
+            Object.entries(commentsObj).map(item => array1.push(item[1]));
 
+            setComments(array1);
             setItem(unsub.data()[itemOld.id]);
             setName(unsubTwo.data().displayName);
 
@@ -115,29 +118,66 @@ const PostDetail = () => {
                     />
                     <button className='postButton' onClick={handleComment}>Add Comment</button>
                 </div>
-                <div style={{ color: "white" }} className='commentsSection'>
-                    {comments && comments.map(item =>
-                        <div className='commentBody'>
-                            <img src="https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg" alt="profile picuture" />
-                            <div className='commentHolder'>
-                                <div className='nameTimeIcon'>
-                                    <div className='nameAndTime'>
-                                        <p className='displayName'>unknown</p>
-                                        <span>Today, 4:45PM</span>
+                <div className='commentsSection'>
+                    {comments ? comments.map(item => <Comments item={item} />)
+                        : <>
+                            <div className='commentBody'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='commentHolder'>
+                                    <div className='nameTimeIcon'>
+                                        <div className='nameCommentSkeleton skeleton'></div>
+                                        <FontAwesomeIcon icon={faEllipsis} />
                                     </div>
-                                    <FontAwesomeIcon icon={faEllipsis} />
-                                </div>
-                                <div className='discussionText' dangerouslySetInnerHTML={{__html:item.content}}></div>
-                                <div className='discussionStatistics'>
-                                    <div className='voteCounter'>
-                                        <FontAwesomeIcon icon={faArrowUp} />
-                                        <p>{item.likes.length}</p>
-                                        <FontAwesomeIcon icon={faArrowDown} />
+                                    <div className='contentSkeleton skeleton'></div>
+                                    <div className='flexingSkeletonHolder'>
+                                        <div className='likesSkeleton skeleton'></div>
+                                        <div className='likesSkeleton skeleton'></div>
                                     </div>
-                                    <p className='commentCounter'><FontAwesomeIcon icon={faCommentDots} />{item.replies.length}</p>
                                 </div>
                             </div>
-                        </div>)}
+                            <div className='commentBody'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='commentHolder'>
+                                    <div className='nameTimeIcon'>
+                                        <div className='nameCommentSkeleton skeleton'></div>
+                                        <FontAwesomeIcon icon={faEllipsis} />
+                                    </div>
+                                    <div className='contentSkeleton skeleton'></div>
+                                    <div className='flexingSkeletonHolder'>
+                                        <div className='likesSkeleton skeleton'></div>
+                                        <div className='likesSkeleton skeleton'></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='commentBody'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='commentHolder'>
+                                    <div className='nameTimeIcon'>
+                                        <div className='nameCommentSkeleton skeleton'></div>
+                                        <FontAwesomeIcon icon={faEllipsis} />
+                                    </div>
+                                    <div className='contentSkeleton skeleton'></div>
+                                    <div className='flexingSkeletonHolder'>
+                                        <div className='likesSkeleton skeleton'></div>
+                                        <div className='likesSkeleton skeleton'></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='commentBody'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='commentHolder'>
+                                    <div className='nameTimeIcon'>
+                                        <div className='nameCommentSkeleton skeleton'></div>
+                                        <FontAwesomeIcon icon={faEllipsis} />
+                                    </div>
+                                    <div className='contentSkeleton skeleton'></div>
+                                    <div className='flexingSkeletonHolder'>
+                                        <div className='likesSkeleton skeleton'></div>
+                                        <div className='likesSkeleton skeleton'></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </>}
                 </div>
             </div>
         </Layout>

@@ -148,12 +148,13 @@
         color: white;
         min-height: max-content;
 
-        .quill{
+        .quill {
             width: 100%;
         }
 
         .ql-toolbar {
             width: 100%;
+
             &.ql-snow {
                 border: none;
             }
@@ -175,6 +176,7 @@
 
         .ql-container {
             min-height: 150px;
+
             &.ql-snow {
                 border: none;
             }
@@ -211,66 +213,37 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        color: white;
 
-        .commentBody {
+        .nameCommentSkeleton {
+            width: 23%;
+            height: 15px;
+        }
+
+        .profilePicSkeleton {
+            width: 55px;
+            height: 50px;
+            border-radius: 8rem;
+        }
+
+        .timeSkeleton {
+            width: 120px;
+            height: 15px;
+        }
+
+        .contentSkeleton {
+            width: 50%;
+            height: 15px;
+        }
+
+        .likesSkeleton {
+            width: 60px;
+            height: 15px;
+        }
+
+        .flexingSkeletonHolder{
             display: flex;
-            align-items: start;
-            gap: 10px;
-            margin: 0 auto;
-            // background-color: #303233;
-            border: 1px solid #424446;
-            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-
-            img {
-                width: 50px;
-                border-radius: 8rem;
-            }
-
-            .commentHolder {
-                display: flex;
-                flex-direction: column;
-                justify-content: start;
-                gap: 5px;
-                width: 100%;
-
-                .nameTimeIcon {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-
-                    .nameAndTime {
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-
-                        span {
-                            color: gray;
-                            font-size: 13px;
-                        }
-    
-                        .displayName {
-                            color: hsl(248, 53%, 58%);
-                        }
-                    }
-                }
-
-                .discussionStatistics {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    color: gray;
-                    font-size: 13px;
-
-                    .voteCounter{
-                        display: flex;
-                        align-items: center;
-                        gap: 5px;
-                    }
-                }
-            }
+            gap: 5px;
         }
     }
 }

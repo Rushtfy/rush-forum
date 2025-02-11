@@ -1,0 +1,60 @@
+.commentBody {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    margin: 0 auto;
+    // background-color: #303233;
+    border: 1px solid #424446;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+
+    img {
+        width: 50px;
+        border-radius: 8rem;
+    }
+
+    .commentHolder {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        gap: 5px;
+        width: 100%;
+
+        .nameTimeIcon {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .nameAndTime {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                span {
+                    color: gray;
+                    font-size: 13px;
+                }
+
+                .displayName {
+                    color: hsl(248, 53%, 58%);
+                }
+            }
+        }
+
+        .discussionStatistics {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: gray;
+            font-size: 13px;
+
+            .voteCounter{
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+        }
+    }
+}
