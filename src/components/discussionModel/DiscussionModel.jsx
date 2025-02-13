@@ -19,12 +19,12 @@ const DiscussionModel = ({ item }) => {
 
         const getNames = async () => {
             const unsub = setName((await getDoc(doc(db, "users", item.ownerUid))).data().displayName);
-            if(item.likes.includes(currentUser.uid)){
+            if (item.likes.includes(currentUser.uid)) {
                 setLiked(true);
             } else {
                 setLiked(false);
             }
-            if(item.dislikes.includes(currentUser.uid)){
+            if (item.dislikes.includes(currentUser.uid)) {
                 setDisliked(true);
             } else {
                 setDisliked(false);
@@ -58,16 +58,16 @@ const DiscussionModel = ({ item }) => {
                     document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.remove("liked");
 
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id+".dislikes"]: arrayRemove(currentUser.uid)
+                        [item.id + ".dislikes"]: arrayRemove(currentUser.uid)
                     });
                 }
-                if(postLikes && postLikes.includes(currentUser.uid)){
+                if (postLikes && postLikes.includes(currentUser.uid)) {
                     document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML) - 1;
 
                     document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.remove("liked");
 
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id+".likes"]: arrayRemove(currentUser.uid)
+                        [item.id + ".likes"]: arrayRemove(currentUser.uid)
                     });
                 } else {
                     document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML) + 1;
@@ -75,7 +75,7 @@ const DiscussionModel = ({ item }) => {
                     document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.add("liked");
 
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id+".likes"]: arrayUnion(currentUser.uid)
+                        [item.id + ".likes"]: arrayUnion(currentUser.uid)
                     });
                 }
             } else {
@@ -106,20 +106,20 @@ const DiscussionModel = ({ item }) => {
                     document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.remove("liked");
 
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id+".likes"]: arrayRemove(currentUser.uid)
+                        [item.id + ".likes"]: arrayRemove(currentUser.uid)
                     });
                 }
-                if(postDislikes && postDislikes.includes(currentUser.uid)){
+                if (postDislikes && postDislikes.includes(currentUser.uid)) {
                     document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.remove("liked");
 
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id+".dislikes"]: arrayRemove(currentUser.uid)
+                        [item.id + ".dislikes"]: arrayRemove(currentUser.uid)
                     });
                 } else {
                     document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.add("liked");
 
                     await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id+".dislikes"]: arrayUnion(currentUser.uid)
+                        [item.id + ".dislikes"]: arrayUnion(currentUser.uid)
                     });
                 }
             } else {
@@ -140,14 +140,14 @@ const DiscussionModel = ({ item }) => {
                     <div className='discussionHolder'>
                         <div className='nameAndTime'>
                             <p className='displayName'>{name ? name : <div className='skeletonName'></div>}</p>
-                            <span>Today, 4:45PM</span>
+                            <span>{item.time ? item.time : "N/A"}</span>
                         </div>
                         <p className='discussionText'>{item.title}</p>
                         <div className='discussionStatistics'>
                             <div className='voteCounter'>
-                                {liked ? <FontAwesomeIcon icon={faArrowUp} onClick={handleUpvote} className='liked'/> : <FontAwesomeIcon icon={faArrowUp} onClick={handleUpvote} />}
+                                {liked ? <FontAwesomeIcon icon={faArrowUp} onClick={handleUpvote} className='liked' /> : <FontAwesomeIcon icon={faArrowUp} onClick={handleUpvote} />}
                                 <p>{item.likes.length}</p>
-                                {disliked ? <FontAwesomeIcon icon={faArrowDown} onClick={handleDownvote}  className='liked'/> : <FontAwesomeIcon icon={faArrowDown} onClick={handleDownvote} />}
+                                {disliked ? <FontAwesomeIcon icon={faArrowDown} onClick={handleDownvote} className='liked' /> : <FontAwesomeIcon icon={faArrowDown} onClick={handleDownvote} />}
                             </div>
                             <p className='commentCounter'><FontAwesomeIcon icon={faCommentDots} />{Object.keys(item.comments).length}</p>
                         </div>

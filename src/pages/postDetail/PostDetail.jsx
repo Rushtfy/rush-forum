@@ -67,6 +67,19 @@ const PostDetail = () => {
     const handleComment = async () => {
         try {
             const uniqueID = uuid();
+            const now = new Date();
+            const currDate = now.toLocaleDateString("en-GB", {
+                weekday: "long",
+                year: "numeric",
+                month: "numeric",
+                day: "2-digit",
+            });
+
+            const currTime = now.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            });
             await updateDoc(doc(db, "userPosts", itemOld.ownerUid), {
                 [itemOld.id + ".comments." + uniqueID]: {
                     "id": uniqueID,
@@ -74,7 +87,8 @@ const PostDetail = () => {
                     "content": content,
                     "likes": [],
                     "dislikes": [],
-                    "replies": []
+                    "replies": [],
+                    "time": currDate + " " + currTime
                 }
             })
             setContent("");
@@ -93,7 +107,7 @@ const PostDetail = () => {
                         <div className='nameTimeIcon'>
                             <div className='nameAndTime'>
                                 <p className='displayName'>{name ? name : <div className='nameSkeleton skeleton'></div>}</p>
-                                <span>Today, 4:45PM</span>
+                                <span>{item.time ? item.time : "N/A"}</span>
                             </div>
                             <FontAwesomeIcon icon={faEllipsis} />
                         </div>

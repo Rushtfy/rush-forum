@@ -35,6 +35,20 @@ const StartDiscussion = () => {
     const handleSubmit = async () => {
         try {
             const uniqueID = uuid();
+            const now = new Date();
+            const currDate = now.toLocaleDateString("en-GB", {
+                weekday: "long",
+                year: "numeric",
+                month: "numeric",
+                day: "2-digit",
+            });
+
+            const currTime = now.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+            });
+
             await updateDoc(doc(db, "userPosts", currentUser.uid), {
                 [uniqueID]: {
                     "id": uniqueID,
@@ -43,7 +57,8 @@ const StartDiscussion = () => {
                     "content": content,
                     "likes": [],
                     "dislikes": [],
-                    "comments": []
+                    "comments": [],
+                    "time": currDate + " " + currTime
                 },
             });
             navigate('/');

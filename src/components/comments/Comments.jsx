@@ -1,4 +1,4 @@
-import { faArrowDown, faArrowUp, faCommentDots, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faCommentDots, faEllipsis, faFlag, faBookmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
 import './comments.scss';
@@ -56,14 +56,14 @@ const Comments = ({ item, post }) => {
                 <div className='nameTimeIcon'>
                     <div className='nameAndTime'>
                         <p className='displayName'>{name ? name : <div className='nameSkeleton skeleton'></div>}</p>
-                        <span>Today, 4:45PM</span>
+                        <span>{item.time ? item.time : "N/A"}</span>
                     </div>
                     <div className="dropdown">
-                        <FontAwesomeIcon icon={faEllipsis} onClick={showDropdown}/>
+                        <FontAwesomeIcon icon={faEllipsis} onClick={showDropdown} className='threeDots'/>
                         <div id={item.id} className="dropdownContent">
-                            <p>Report</p>
-                            <p>Save</p>
-                            <p onClick={handleDelete}>Delete</p>
+                            <p><FontAwesomeIcon icon={faFlag} />Report</p>
+                            <p><FontAwesomeIcon icon={faBookmark} />Save</p>
+                            <p onClick={handleDelete}><FontAwesomeIcon icon={faTrash} />Delete</p>
                         </div>
                     </div>
                 </div>
