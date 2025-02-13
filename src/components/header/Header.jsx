@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './header.scss'
 import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth';
@@ -9,10 +9,21 @@ import { faUser, faGear, faArrowRightFromBracket } from '@fortawesome/free-solid
 const Header = () => {
 
     const navigate = useNavigate();
+    const [dropdown, setDropdown] = useState(false);
 
     const handleLogOut = async () => {
         await signOut(auth);
         navigate("/login");
+    }
+
+    const showDropdown = () => {
+        if(dropdown) {
+            document.getElementById("myDropdown").style.display = "none";
+            setDropdown(false);
+        } else {
+            document.getElementById("myDropdown").style.display = "block";
+            setDropdown(true);
+        }
     }
 
     return (
@@ -59,7 +70,7 @@ const Header = () => {
                         </svg>
                     </label>
                     <div className="dropdown">
-                        <img src="https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg" alt="Profile Picture" />
+                        <img src="https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg" alt="Profile Picture" onClick={showDropdown}/>
                         <div id="myDropdown" className="dropdownContent">
                             <p><FontAwesomeIcon icon={faUser} />Profile</p>
                             <p className='settings'><FontAwesomeIcon icon={faGear} />Settings</p>

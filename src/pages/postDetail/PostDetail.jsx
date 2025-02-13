@@ -119,7 +119,7 @@ const PostDetail = () => {
                     <button className='postButton' onClick={handleComment}>Add Comment</button>
                 </div>
                 <div className='commentsSection'>
-                    {comments ? comments.map(item => <Comments item={item} />)
+                    {comments ? comments.map(item => <Comments item={item} post={itemOld}/>)
                         : <>
                             <div className='commentBody'>
                                 <div className='profilePicSkeleton skeleton'></div>

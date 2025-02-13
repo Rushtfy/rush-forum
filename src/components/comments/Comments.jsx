@@ -2,14 +2,38 @@ import { faArrowDown, faArrowUp, faCommentDots, faEllipsis } from '@fortawesome/
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
 import './comments.scss';
-import { doc, getDoc } from 'firebase/firestore';
+import { deleteField, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { AuthContext } from '../context/AuthContext';
 
-const Comments = ({ item }) => {
+const Comments = ({ item, post }) => {
 
     const [name, setName] = useState(null);
+    const [dropdown, setDropdown] = useState(false);
     const { currentUser } = useContext(AuthContext);
+
+    const showDropdown = async (e) => {
+        e.stopPropagation();
+        if(dropdown) {
+            document.getElementById(item.id).style.display = "none";
+            setDropdown(false);
+        } else {
+
+            if(item.senderUid != currentUser.uid) {
+                document.getElementById(item.id).children[2].style.display = "none";
+            }
+
+            document.getElementById(item.id).style.display = "block";
+            setDropdown(true);
+        }
+    }
+
+    const handleDelete = async () => {
+        await updateDoc(doc(db, "userPosts", post.ownerUid), {
+            [post.id + ".comments." + item.id]: deleteField()
+        });
+        window.location.reload();
+    }
 
     useEffect(() => {
         const getName = async () => {
@@ -34,7 +58,14 @@ const Comments = ({ item }) => {
                         <p className='displayName'>{name ? name : <div className='nameSkeleton skeleton'></div>}</p>
                         <span>Today, 4:45PM</span>
                     </div>
-                    <FontAwesomeIcon icon={faEllipsis} />
+                    <div className="dropdown">
+                        <FontAwesomeIcon icon={faEllipsis} onClick={showDropdown}/>
+                        <div id={item.id} className="dropdownContent">
+                            <p>Report</p>
+                            <p>Save</p>
+                            <p onClick={handleDelete}>Delete</p>
+                        </div>
+                    </div>
                 </div>
                 <div className='discussionText' dangerouslySetInnerHTML={{ __html: item.content }}></div>
                 <div className='discussionStatistics'>
