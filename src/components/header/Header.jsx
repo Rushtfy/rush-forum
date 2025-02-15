@@ -26,6 +26,10 @@ const Header = () => {
         }
     }
 
+    const goProfile = () => {
+        navigate("/profile");
+    }
+
     return (
         <div className='header'>
             <div className='headerContainer'>
@@ -72,7 +76,7 @@ const Header = () => {
                     <div className="dropdown">
                         <img src="https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg" alt="Profile Picture" onClick={showDropdown}/>
                         <div id="myDropdown" className="dropdownContent">
-                            <p><FontAwesomeIcon icon={faUser} />Profile</p>
+                            <p onClick={goProfile}><FontAwesomeIcon icon={faUser} />Profile</p>
                             <p className='settings'><FontAwesomeIcon icon={faGear} />Settings</p>
                             <p onClick={handleLogOut}><FontAwesomeIcon icon={faArrowRightFromBracket} />Log Out</p>
                         </div>

@@ -4,7 +4,7 @@ import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore'
 import React, { useContext, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { v4 as uuid } from "uuid";
 import Comments from '../../components/comments/Comments';
 import { AuthContext } from '../../components/context/AuthContext';
@@ -16,6 +16,7 @@ const PostDetail = () => {
 
     const location = useLocation();
     const itemOld = location.state;
+    const navigate = useNavigate();
     const { currentUser } = useContext(AuthContext);
 
     const [item, setItem] = useState(itemOld);
@@ -40,19 +41,22 @@ const PostDetail = () => {
             const unsub = await getDoc(doc(db, "userPosts", itemOld.ownerUid));
             const unsubTwo = await getDoc(doc(db, "users", itemOld.ownerUid));
             const unsubThree = await getDocs(collection(db, "userPosts"));
-
-
-            let array1 = [];
-            let commentsObj = {}
-            setComments(null);
-            unsubThree.forEach((doc) => {
-                commentsObj = doc.data()?.[itemOld.id]?.comments;
-            })
-            Object.entries(commentsObj).map(item => array1.push(item[1]));
-
-            setComments(array1);
-            setItem(unsub.data()[itemOld.id]);
-            setName(unsubTwo.data().displayName);
+            try {
+                let array1 = [];
+                let commentsObj = {}
+                setComments(null);
+                unsubThree.forEach((doc) => {
+                    commentsObj = doc.data()?.[itemOld.id]?.comments;
+                })
+                Object.entries(commentsObj).map(item => array1.push(item[1]));
+    
+                setComments(array1);
+                setItem(unsub.data()[itemOld.id]);
+                setName(unsubTwo.data().displayName);
+            } catch (error) {
+                alert("Something went wrong!");
+                navigate("/");
+            }
 
             return () => {
                 unsub();
@@ -111,7 +115,8 @@ const PostDetail = () => {
                             </div>
                             <FontAwesomeIcon icon={faEllipsis} />
                         </div>
-                        <h2 className='discussionText'>{item.title}</h2>
+                        <h2 className='discussionTextTitle'>{item.title}</h2>
+                        {item.content && <p className='discussionTextBody' dangerouslySetInnerHTML={{ __html: item.content }}></p>}
                         <div className='discussionStatistics'>
                             <div className='voteCounter'>
                                 <FontAwesomeIcon icon={faArrowUp} />
@@ -133,7 +138,7 @@ const PostDetail = () => {
                     <button className='postButton' onClick={handleComment}>Add Comment</button>
                 </div>
                 <div className='commentsSection'>
-                    {comments ? comments.map(item => <Comments item={item} post={itemOld}/>)
+                    {comments ? comments.map(item => <Comments item={item} post={itemOld} />)
                         : <>
                             <div className='commentBody'>
                                 <div className='profilePicSkeleton skeleton'></div>

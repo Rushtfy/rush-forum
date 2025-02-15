@@ -6,6 +6,7 @@ import Login from '../pages/login/Login'
 import { AuthContext } from '../components/context/AuthContext'
 import StartDiscussion from '../pages/startDiscussion/StartDiscussion'
 import PostDetail from '../pages/postDetail/PostDetail'
+import Profile from '../pages/profile/Profile'
 
 const Router = () => {
 
@@ -31,6 +32,7 @@ const Router = () => {
                 <Route path='/login' element={<Login />} />
                 <Route path='/create' element={<StartDiscussion />} />
                 <Route path='/postDetail' element={<PostDetail />}/>
+                <Route path='/profile' element={<Profile />}/>
             </Routes>
         </BrowserRouter>
     )
