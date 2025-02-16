@@ -7,6 +7,7 @@ import { AuthContext } from '../components/context/AuthContext'
 import StartDiscussion from '../pages/startDiscussion/StartDiscussion'
 import PostDetail from '../pages/postDetail/PostDetail'
 import Profile from '../pages/profile/Profile'
+import Chat from '../pages/chat/Chat'
 
 const Router = () => {
 
@@ -33,6 +34,7 @@ const Router = () => {
                 <Route path='/create' element={<StartDiscussion />} />
                 <Route path='/postDetail' element={<PostDetail />}/>
                 <Route path='/profile' element={<Profile />}/>
+                <Route path='/chat' element={<Chat />}/>
             </Routes>
         </BrowserRouter>
     )
