@@ -16,9 +16,17 @@
             color: white;
             margin-top: 40px;
 
-            img {
-                width: 100px;
-                border-radius: 8rem;
+            input {
+                display: none;
+            }
+
+            label {
+                img {
+                    width: 100px;
+                    height: 100px;
+                    border-radius: 8rem;
+                    cursor: pointer;
+                }
             }
         }
 

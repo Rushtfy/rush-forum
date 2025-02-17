@@ -23,17 +23,32 @@ const Chat = () => {
     }
 
     const handleKey = (e) => {
-        e.code == "Enter" && handleSearch();
+        e.code === "Enter" && handleSearch();
     }
 
     return (
         <Layout>
             <input type="text" placeholder='search user' onKeyDown={handleKey} onChange={e => setUsername(e.target.value)} />
-            {user && 
-            <div className='user'>
-                <span><span style={{color:"red"}}>User Name:</span>{user.displayName}</span>
-                <span> <span style={{color:"red"}}>UID:</span>{user.uid}</span>
-            </div>}
+            {user &&
+                <div className='user'>
+                    <span><span style={{ color: "red" }}>User Name:</span>{user.displayName}</span>
+                    <span> <span style={{ color: "red" }}>UID:</span>{user.uid}</span>
+                </div>}
+            {/* <div className="p-4" style={{color:"white"}}>
+                <input type="file" accept="image/*" onChange={handleFileChange} className="mb-4" />
+                {base64 && (
+                    <div>
+                        <p className="font-bold">Base64 Output:</p>
+                        <textarea
+                            value={base64}
+                            readOnly
+                            className="w-full h-32 p-2 border border-gray-300 rounded"
+                        />
+                        <p className="mt-2 font-bold">Preview:</p>
+                        <img src={base64} alt="Uploaded" className="mt-2 max-w-full h-auto border rounded" />
+                    </div>
+                )}
+            </div> */}
         </Layout>
     )
 }
