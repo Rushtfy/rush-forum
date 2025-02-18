@@ -11,6 +11,7 @@ const DiscussionModel = ({ item }) => {
 
     const { currentUser } = useContext(AuthContext);
     const [name, setName] = useState(null);
+    const [profilePicture, setProfilePicture] = useState("");
     const [liked, setLiked] = useState(false);
     const [disliked, setDisliked] = useState(false);
     const navigate = useNavigate();
@@ -18,25 +19,23 @@ const DiscussionModel = ({ item }) => {
     useEffect(() => {
 
         const getNames = async () => {
-            const unsub = setName((await getDoc(doc(db, "users", item.ownerUid))).data().displayName);
-            if (item.likes.includes(currentUser.uid)) {
-                setLiked(true);
-            } else {
-                setLiked(false);
-            }
-            if (item.dislikes.includes(currentUser.uid)) {
-                setDisliked(true);
-            } else {
-                setDisliked(false);
-            }
+            if (!item?.ownerUid) return;
 
-            return () => {
-                unsub();
+            try {
+                const userDoc = await getDoc(doc(db, "users", item.ownerUid));
+                if (userDoc.exists()) {
+                    setName(userDoc.data().displayName);
+                    setProfilePicture(userDoc.data().photoURL);
+                }
+                setLiked(item.likes.includes(currentUser.uid));
+                setDisliked(item.dislikes.includes(currentUser.uid));
+            } catch (error) {
+                console.log("Someting went wrong:", error);
             }
         }
 
-        currentUser.uid && getNames();
-    }, [collection(db, "userPosts")]);
+        currentUser?.uid && getNames();
+    }, [item, currentUser?.uid]);
 
     const goDetail = () => {
         navigate('/postDetail', { state: item });
@@ -136,7 +135,7 @@ const DiscussionModel = ({ item }) => {
         <div className='individualDiscussion' onClick={goDetail} id={item.id}>
             <div className='dicussionContainer'>
                 <div className='imageAndDiscussion'>
-                    <img src="https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg" alt="profile picuture" />
+                    <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
                     <div className='discussionHolder'>
                         <div className='nameAndTime'>
                             <p className='displayName'>{name ? name : <div className='skeletonName'></div>}</p>

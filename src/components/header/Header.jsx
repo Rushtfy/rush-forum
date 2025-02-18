@@ -1,15 +1,19 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './header.scss'
 import { useNavigate } from 'react-router-dom'
 import { signOut } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faGear, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { AuthContext } from '../context/AuthContext';
+import { doc, getDoc } from 'firebase/firestore';
 
 const Header = () => {
 
     const navigate = useNavigate();
     const [dropdown, setDropdown] = useState(false);
+    const [profilePicture, setProfilePicture] = useState("");
+    const { currentUser } = useContext(AuthContext);
 
     const handleLogOut = async () => {
         await signOut(auth);
@@ -17,7 +21,7 @@ const Header = () => {
     }
 
     const showDropdown = () => {
-        if(dropdown) {
+        if (dropdown) {
             document.getElementById("myDropdown").style.display = "none";
             setDropdown(false);
         } else {
@@ -29,6 +33,15 @@ const Header = () => {
     const goProfile = () => {
         navigate("/profile");
     }
+
+    useEffect(() => {
+        const getProfilePicture = async () => {
+            const res = await getDoc(doc(db, "users", currentUser.uid));
+            const updatedPhotoURL = res.data().photoURL;
+            setProfilePicture(updatedPhotoURL);
+        }
+        currentUser.uid && getProfilePicture();
+    }, [currentUser.uid]);
 
     return (
         <div className='header'>
@@ -74,7 +87,7 @@ const Header = () => {
                         </svg>
                     </label>
                     <div className="dropdown">
-                        <img src="https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg" alt="Profile Picture" onClick={showDropdown}/>
+                    <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" onClick={showDropdown} />
                         <div id="myDropdown" className="dropdownContent">
                             <p onClick={goProfile}><FontAwesomeIcon icon={faUser} />Profile</p>
                             <p className='settings'><FontAwesomeIcon icon={faGear} />Settings</p>

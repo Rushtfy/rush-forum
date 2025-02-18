@@ -1,12 +1,24 @@
-.user{
+.user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: white;
-    cursor: pointer;
+    background-color: #303233;
     max-width: max-content;
     padding: 10px;
-    border-radius: 8rem;
+    border-radius: 5px;
     margin: 10px;
-    transition: .2s;
-    &:hover{
+    transition: .5s;
+    cursor: pointer;
+
+    img {
+        height: 50px;
+        width: 50px;
+        border-radius: 8rem;
+    }
+
+    &:hover {
         background-color: #424446;
+        border-radius: 8rem;
     }
 }

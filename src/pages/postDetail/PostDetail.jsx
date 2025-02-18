@@ -21,6 +21,7 @@ const PostDetail = () => {
 
     const [item, setItem] = useState(itemOld);
     const [name, setName] = useState(null);
+    const [profilePicture, setProfilePicture] = useState("");
     const [content, setContent] = useState("");
     const [comments, setComments] = useState(null);
 
@@ -38,40 +39,39 @@ const PostDetail = () => {
 
     useEffect(() => {
         const getData = async () => {
-            const unsub = await getDoc(doc(db, "userPosts", itemOld.ownerUid));
-            const unsubTwo = await getDoc(doc(db, "users", itemOld.ownerUid));
-            const unsubThree = await getDocs(collection(db, "userPosts"));
+            if (!itemOld?.ownerUid) return;
+
             try {
-                let array1 = [];
-                let commentsObj = {}
+                const userPostDoc = await getDoc(doc(db, "userPosts", itemOld.ownerUid));
+                const userDoc = await getDoc(doc(db, "users", itemOld.ownerUid));
+                const allPostsSnapshot = await getDocs(collection(db, "userPosts"));
+
+                let allComments = [];
                 setComments(null);
-                unsubThree.forEach((doc) => {
-                    commentsObj = doc.data()?.[itemOld.id]?.comments;
-                })
-                Object.entries(commentsObj).map(item => array1.push(item[1]));
-    
-                setComments(array1);
-                setItem(unsub.data()[itemOld.id]);
-                setName(unsubTwo.data().displayName);
+                allPostsSnapshot.forEach((doc) => {
+                    const postComments = doc.data()?.[itemOld.id]?.comments;
+                    if (postComments) {
+                        allComments.push(...Object.values(postComments));
+                    }
+                });
+
+                setComments(allComments);
+                setItem(userPostDoc.data()?.[itemOld.id] || {});
+                setName(userDoc.data()?.displayName || "Unknown");
+                setProfilePicture(userDoc.data()?.photoURL);
             } catch (error) {
-                alert("Something went wrong!");
+                console.log("Something went wrong:", error);
                 navigate("/");
             }
-
-            return () => {
-                unsub();
-                unsubTwo();
-                unsubThree();
-            }
-
         }
-        currentUser.uid && getData();
-    }, [currentUser.uid]);
+        currentUser?.uid && getData();
+    }, [currentUser?.uid, itemOld]);
 
     const handleComment = async () => {
         try {
             const uniqueID = uuid();
             const now = new Date();
+
             const currDate = now.toLocaleDateString("en-GB", {
                 weekday: "long",
                 year: "numeric",
@@ -84,19 +84,23 @@ const PostDetail = () => {
                 minute: "2-digit",
                 hour12: false,
             });
+
+            const newComment = {
+                "id": uniqueID,
+                "senderUid": currentUser.uid,
+                "content": content,
+                "likes": [],
+                "dislikes": [],
+                "replies": [],
+                "time": currDate + " " + currTime
+            };
+
             await updateDoc(doc(db, "userPosts", itemOld.ownerUid), {
-                [itemOld.id + ".comments." + uniqueID]: {
-                    "id": uniqueID,
-                    "senderUid": currentUser.uid,
-                    "content": content,
-                    "likes": [],
-                    "dislikes": [],
-                    "replies": [],
-                    "time": currDate + " " + currTime
-                }
-            })
+                [itemOld.id + ".comments." + uniqueID]: newComment
+            });
+
+            setComments((prev) => [...prev, newComment]);
             setContent("");
-            window.location.reload();
         } catch (error) {
             alert(error);
         }
@@ -106,7 +110,7 @@ const PostDetail = () => {
         <Layout>
             <div className='containerPostDetail'>
                 <div className='imageAndDiscussion'>
-                    <img src="https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg" alt="profile picuture" />
+                    <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
                     <div className='discussionHolder'>
                         <div className='nameTimeIcon'>
                             <div className='nameAndTime'>
@@ -138,7 +142,7 @@ const PostDetail = () => {
                     <button className='postButton' onClick={handleComment}>Add Comment</button>
                 </div>
                 <div className='commentsSection'>
-                    {comments ? comments.map(item => <Comments item={item} post={itemOld} />)
+                    {comments ? comments.map(item => <Comments item={item} post={itemOld} setComments={setComments}/>)
                         : <>
                             <div className='commentBody'>
                                 <div className='profilePicSkeleton skeleton'></div>

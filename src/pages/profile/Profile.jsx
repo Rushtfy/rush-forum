@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './profile.scss';
 import Layout from '../../components/layout/Layout';
 import { AuthContext } from '../../components/context/AuthContext';
 import { auth, db } from '../../firebase';
 import { updateProfile } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 const Profile = () => {
 
@@ -22,6 +22,35 @@ const Profile = () => {
         }
     }
 
+    useEffect(() => {
+        const updateProfilePicture = async () => {
+            if (!base64 || !currentUser?.uid) return;
+
+            try {
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    "photoURL": base64
+                });
+                // await updateProfile(auth.currentUser, {
+                //     photoURL: base64
+                // });
+                console.log("Profile Picture updated successfully");
+            } catch (error) {
+                console.log("Something went wrong:", error);
+            }
+        }
+
+        updateProfilePicture();
+    }, [base64]);
+
+    useEffect(() => {
+        const getProfilePicture = async () => {
+            const res = await getDoc(doc(db, "users", currentUser.uid));
+            const updatedPhotoURL = res.data().photoURL;
+            setProfilePicture(updatedPhotoURL);
+        }
+        currentUser.uid && getProfilePicture();
+    }, [currentUser.uid, base64]);
+
     return (
         <Layout>
             <div className='containerProfileNav'>
@@ -29,9 +58,9 @@ const Profile = () => {
                     <div className='userCredentials'>
                         <input type="file" accept="image/*" id='imageSelector' onChange={handleFileChange} />
                         <label htmlFor="imageSelector">
-                            {base64 ? <img src={base64} alt="profile picture" /> : <img src="https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg" alt="profile picture" />}
+                        <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
                         </label>
-                        <h3>{currentUser.displayName}</h3>
+                        <h3 onClick={() => console.log(currentUser)}>{currentUser.displayName}</h3>
                     </div>
                     <ul>
                         <li><a href="/profile/posts">Posts</a></li>
