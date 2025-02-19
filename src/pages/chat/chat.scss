@@ -1,24 +1,165 @@
-.user {
+.chatBody {
     display: flex;
     align-items: center;
-    gap: 10px;
-    color: white;
-    background-color: #303233;
-    max-width: max-content;
-    padding: 10px;
-    border-radius: 5px;
-    margin: 10px;
-    transition: .5s;
-    cursor: pointer;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 
-    img {
-        height: 50px;
-        width: 50px;
-        border-radius: 8rem;
-    }
+    .chatContainer {
+        display: flex;
+        width: 90%;
+        height: 90%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
 
-    &:hover {
-        background-color: #424446;
-        border-radius: 8rem;
+        .chatSidebar {
+            background-color: #3e3578;
+            width: 25%;
+            transition: .2s;
+
+            .chatSidebarHeader {
+                background-color: #332c60;
+                height: 8%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+            }
+
+            .chatSearchUser {
+                input {
+                    background-color: transparent;
+                    border: none;
+                    outline: none;
+                    width: 100%;
+                    padding: 15px 10px;
+                    border-bottom: 1px solid #bbb;
+                    color: white;
+                    font-size: 16px;
+
+                    &::placeholder {
+                        color: #bbb;
+                    }
+                }
+            }
+
+            .user {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                transition: .2s;
+                cursor: pointer;
+
+                img {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 8rem;
+                }
+
+                p {
+                    margin-left: 10px;
+                    color: white;
+                    font-size: 18px;
+                    font-weight: 500;
+                }
+
+                &:hover {
+                    background-color: #332c60;
+                }
+            }
+
+            .chats {
+                .userChat {
+                    display: flex;
+                    align-items: center;
+                    padding: 10px;
+                    transition: .2s;
+                    cursor: pointer;
+
+                    img {
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 8rem;
+                    }
+
+                    .userChatInfo {
+                        color: white;
+                        margin-left: 10px;
+
+                        span {
+                            font-size: 18px;
+                            font-weight: 500;
+                        }
+                    }
+
+                    &:hover {
+                        background-color: #332c60;
+                    }
+                }
+            }
+        }
+
+        .chatHeaderAndMessagesField {
+            width: 75%;
+
+            .chatHeader {
+                background-color: #6A5BCD;
+                width: 100%;
+                height: 8%;
+            }
+
+            .chatMessagesField {
+                height: 92%;
+                background-color: #424446;
+
+                .chatField {
+                    height: 90%;
+                }
+
+                .inputField {
+                    height: 10%;
+                    background-color: #303233;
+                    display: flex;
+                    align-items: center;
+
+                    input {
+                        height: 100%;
+                        width: 85%;
+                        border: none;
+                        padding: 0 10px;
+                        font-size: 17px;
+                        outline: none;
+                        background-color: transparent;
+                        color: white;
+                    }
+
+                    .chatMedia {
+                        width: 15%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
+                        font-size: 20px;
+
+                        svg {
+                            font-size: 25px;
+                            color: #bbb;
+                        }
+
+                        button {
+                            padding: 10px 12px;
+                            font-size: 16px;
+                            font-weight: 500;
+                            background-color: #6A5BCD;
+                            border: none;
+                            color: white;
+                            border-radius: 5px;
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

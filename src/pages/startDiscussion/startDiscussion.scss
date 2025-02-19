@@ -9,8 +9,60 @@
     gap: 20px;
     max-width: max-content;
 
-    h1 {
-        color: white;
+    .title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 550px;
+
+        h1 {
+            color: white;
+        }
+
+        .tagInputBody {
+            border: 1px solid #444;
+            border-radius: 5px;
+            overflow: hidden;
+            color: white;
+            width: 300px;
+
+            .tagInputContainer {
+                .tagHolder {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 5px;
+
+                }
+
+                input {
+                    padding: 10px 5px;
+                    background-color: #111;
+                    color: white;
+                    width: 100%;
+
+                    &::placeholder {
+                        color: #bbb;
+                    }
+                }
+
+                span {
+                    background-color: #303233;
+                    padding: 5px;
+                    border-radius: 5px;
+                }
+
+                button {
+                    margin-left: 5px;
+                    background-color: #424446;
+                    height: 20px;
+                    width: 20px;
+                    border-radius: 5px;
+                    color: white;
+                    border: none;
+                    cursor: pointer;
+                }
+            }
+        }
     }
 
     .title-input-container {
@@ -94,7 +146,7 @@
             border-bottom-right-radius: 20px;
             min-height: 150px;
 
-            &.ql-snow{
+            &.ql-snow {
                 border: 1px solid #444;
                 border-top: none;
             }
@@ -128,6 +180,7 @@
         }
     }
 }
+
 .startDiscussionBody {
     height: 100%;
 
@@ -140,12 +193,14 @@
 }
 
 @media screen and (max-width: 360px) {
-    .inputsField{
+    .inputsField {
         padding: 30px;
-        .title-input-container{
+
+        .title-input-container {
             width: 300px;
         }
-        .editor-container{
+
+        .editor-container {
             width: 300px;
         }
     }

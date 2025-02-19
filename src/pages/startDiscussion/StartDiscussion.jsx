@@ -15,7 +15,9 @@ const StartDiscussion = () => {
 
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
-    const [error, setError] = useState(false);
+
+    const [tags, setTags] = useState([]);
+    const [inputValue, setInputValue] = useState("");
 
     const maxLength = 300;
     const navigate = useNavigate();
@@ -30,6 +32,21 @@ const StartDiscussion = () => {
             ['blockquote', 'code-block'],
             ['clean']
         ]
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter" || event.key === ",") {
+            event.preventDefault();
+            const trimmedValue = inputValue.trim();
+            if (trimmedValue && !tags.includes(trimmedValue)) {
+                setTags([...tags, trimmedValue]);
+            }
+            setInputValue("");
+        }
+    };
+
+    const handleRemoveTag = (index) => {
+        setTags(tags.filter((_, i) => i !== index));
     };
 
     const handleSubmit = async () => {
@@ -58,20 +75,42 @@ const StartDiscussion = () => {
                     "likes": [],
                     "dislikes": [],
                     "comments": [],
+                    "tags": tags,
                     "time": currDate + " " + currTime
                 },
             });
             navigate('/');
         } catch (error) {
-            alert(error);
-            setError(true);
+            console.log("Something went wrong:", error);
         }
     }
 
     return (
         <Layout>
             <div className='inputsField'>
-                <h1>Create Post</h1>
+                <div className='title'>
+                    <h1>Create Post</h1>
+                    <div className='tagInputBody'>
+                        <div className='tagInputContainer'>
+                            <div className='tagHolder'>
+                                {tags.map((tag, index) => (
+                                    <span>
+                                        {tag}
+                                        <button onClick={() => handleRemoveTag(index)}>✖</button>
+                                    </span>
+                                ))}
+                            </div>
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Add Tags"
+                                style={{ border: "none", outline: "none", flex: 1 }}
+                            />
+                        </div>
+                    </div>
+                </div>
 
                 <div className="title-input-container">
                     <div className="input-wrapper">

@@ -1,10 +1,9 @@
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
-import './profile.scss';
-import Layout from '../../components/layout/Layout';
 import { AuthContext } from '../../components/context/AuthContext';
-import { auth, db } from '../../firebase';
-import { updateProfile } from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import Layout from '../../components/layout/Layout';
+import { db } from '../../firebase';
+import './profile.scss';
 
 const Profile = () => {
 

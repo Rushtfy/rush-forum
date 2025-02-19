@@ -18,14 +18,15 @@ const Register = () => {
         const password = e.target[2].value;
 
         try {
-            const createUser = await createUserWithEmailAndPassword(auth, email, password);
-            const updateUser = await updateProfile(auth.currentUser, { displayName: displayName });
-            const addUserToDb = await setDoc(doc(db, "users", auth.currentUser.uid), {
+            await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(auth.currentUser, { displayName: displayName });
+            await setDoc(doc(db, "users", auth.currentUser.uid), {
                 uid: auth.currentUser.uid,
                 displayName: displayName,
                 email: email
             });
-            const addUserPostsToDb = await setDoc(doc(db, "userPosts", auth.currentUser.uid), {});
+            await setDoc(doc(db, "userPosts", auth.currentUser.uid), {});
+            await setDoc(doc(db, "userChats", auth.currentUser.uid), {});
             navigate('/');
         } catch(error) {
             setError(true);
