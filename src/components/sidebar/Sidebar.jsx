@@ -1,12 +1,20 @@
-import React from 'react'
-import './sidebar.scss'
+import { faArrowRightFromBracket, faComments, faInbox, faUsers, faHouse, faMessage } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComments, faUsers } from '@fortawesome/free-solid-svg-icons'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import './sidebar.scss'
 
 const Sidebar = () => {
 
     const navigate = useNavigate();
+
+    const goChat = () => {
+        navigate("/chat");
+    }
+
+    const goHome = () => {
+        navigate("/");
+    }
 
     return (
         <div className='sidebar'>
@@ -17,8 +25,9 @@ const Sidebar = () => {
                         <span className="front"> Start a new Discussion </span>
                     </button>
                     <ul>
-                        <li className='test'><FontAwesomeIcon icon={faComments} />All discussions</li>
+                        <li onClick={goHome}><FontAwesomeIcon icon={faHouse} />Home</li>
                         <li><FontAwesomeIcon icon={faUsers} />Following</li>
+                        <li onClick={goChat}><FontAwesomeIcon icon={faMessage} />Chat</li>
                     </ul>
                 </div>
             </div>

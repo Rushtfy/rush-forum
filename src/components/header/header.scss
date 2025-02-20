@@ -22,7 +22,7 @@
             color: white;
 
             .logoHalf {
-                color: #6D54B5;
+                color: #6A5BCD;
             }
         }
 
@@ -47,7 +47,7 @@
             button {
                 padding: 12px;
                 border: none;
-                background-color: #6D54B5;
+                background-color: #6A5BCD;
                 color: white;
                 border-top-right-radius: 10px;
                 border-bottom-right-radius: 10px;
@@ -55,134 +55,48 @@
             }
         }
 
-        .ppAndSwitch {
-            display: flex;
-            gap: 10px;
+        .dropdown {
+            position: relative;
+            display: inline-block;
 
-            .themeToggle {
-                color: #bbb;
-                width: 3em;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .st-sunMoonThemeToggleBtn {
-                position: relative;
+            img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50px;
                 cursor: pointer;
-
-                .themeToggleInput {
-                    opacity: 0;
-                    width: max-content;
-                    aspect-ratio: 1;
-
-                    &:checked+svg {
-                        transform: rotate(90deg);
-
-                        mask {
-                            >circle {
-                                transform: translate(16px, -3px);
-                            }
-                        }
-
-                        .sunMoon {
-                            transform: scale(0.55);
-                        }
-
-                        .sunRay {
-                            animation: showRay1832 0.4s ease 0s 1 forwards;
-                        }
-                    }
-                }
-
-                svg {
-                    position: absolute;
-                    left: 0;
-                    width: 40px;
-                    height: 40px;
-                    transition: transform 0.4s ease;
-                    transform: rotate(40deg);
-
-                    .sunMoon {
-                        transform-origin: center center;
-                        transition: inherit;
-                        transform: scale(1);
-                    }
-
-                    .sunRay {
-                        transform-origin: center center;
-                        transform: scale(0);
-                    }
-
-                    mask {
-                        >circle {
-                            transition: transform 0.64s cubic-bezier(0.41, 0.64, 0.32, 1.575);
-                            transform: translate(0px, 0px);
-                        }
-                    }
-
-                    .sunRay2 {
-                        animation-delay: 0.05s !important;
-                    }
-
-                    .sunRay3 {
-                        animation-delay: 0.1s !important;
-                    }
-
-                    .sunRay4 {
-                        animation-delay: 0.17s !important;
-                    }
-
-                    .sunRay5 {
-                        animation-delay: 0.25s !important;
-                        animation-delay: 0.29s !important;
-                    }
-                }
+                box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
             }
 
-            .dropdown {
-                position: relative;
-                display: inline-block;
+            .dropdownContent {
+                display: none;
+                position: absolute;
+                background-color: #303233;
+                min-width: 160px;
+                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
+                z-index: 1;
+                right: 0;
+                border-radius: 5px;
+                border: 1px solid rgb(103, 103, 103);
+                overflow: hidden;
 
-                img {
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50px;
+                p {
+                    color: white;
+                    padding: 12px 16px;
+                    text-decoration: none;
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
                     cursor: pointer;
-                    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
+
+                    &:hover {
+                        background-color: rgb(88, 88, 88);
+                    }
                 }
 
-                .dropdownContent {
-                    display: none;
-                    position: absolute;
-                    background-color: #303233;
-                    min-width: 160px;
-                    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
-                    z-index: 1;
-                    right: 0;
-                    border-radius: 5px;
-                    border: 1px solid rgb(103, 103, 103);
-                    overflow: hidden;
-
-                    p {
-                        color: white;
-                        padding: 12px 16px;
-                        text-decoration: none;
-                        display: flex;
-                        gap: 10px;
-                        align-items: center;
-                        cursor: pointer;
-
-                        &:hover {
-                            background-color: rgb(88, 88, 88);
-                        }
-                    }
-
-                    .settings {
-                        &:hover {
-                            svg {
-                                animation: spin 2s linear infinite;
-                            }
+                .settings {
+                    &:hover {
+                        svg {
+                            animation: spin 2s linear infinite;
                         }
                     }
                 }

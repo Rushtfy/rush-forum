@@ -1,9 +1,10 @@
 .sidebar {
-    display: inline-block;
+    display: flex;
     height: 100%;
     width: 20%;
     background-color: #212121;
     border-right: 1px solid rgb(75, 75, 75);
+    position: relative;
 
     .discussionStarterBox {
         border-bottom: 2px solid rgb(75, 75, 75);
@@ -93,18 +94,23 @@
                 color: white;
                 font-weight: 500;
                 font-size: 17px;
+                transition: .2s;
                 cursor: pointer;
+
+                &:hover {
+                    color: #6A5BCD;
+                }
             }
 
             .test {
-                color: #8972ce;
+                color: #6A5BCD;
             }
         }
     }
 }
 
 @media screen and (max-width: 360px) {
-    .sidebar{
+    .sidebar {
         display: none;
     }
 }
