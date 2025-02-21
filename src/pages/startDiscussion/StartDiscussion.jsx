@@ -105,7 +105,7 @@ const StartDiscussion = () => {
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="Add Tags"
+                                placeholder="Add Categories and Press Enter"
                                 style={{ border: "none", outline: "none", flex: 1 }}
                             />
                         </div>

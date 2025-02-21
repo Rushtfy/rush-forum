@@ -6,6 +6,7 @@ import { db } from '../../firebase';
 import './discussions.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faReply, faArrowUp, faArrowDown, faCommentDots } from '@fortawesome/free-solid-svg-icons'
+import Layout from '../../components/layout/Layout';
 
 const Discussions = () => {
 
@@ -27,129 +28,136 @@ const Discussions = () => {
     }
 
     useEffect(() => {
-        const getPosts = async () => {
-            const unsub = await getDocs(collection(db, "userPosts"));
-            let array1 = []
-            setPosts(null)
-            unsub.forEach((info) => {
-                Object.entries(info.data()).map(item => array1.push(item[1]));
-            });
-            setPosts(array1.sort((a, b) => b.likes.length - a.likes.length));
 
-            return () => {
-                unsub();
+        if (!currentUser?.uid) return;
+
+        const getPosts = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, "userPosts"));
+                let postsArray = [];
+
+                querySnapshot.forEach((doc) => {
+                    postsArray.push(...Object.values(doc.data()));
+                });
+
+                postsArray.sort((a, b) => b.likes.length - a.likes.length);
+                setPosts(postsArray);
+            } catch (error) {
+                console.log("Something went wrong:", error);
             }
         }
 
-        currentUser.uid && getPosts()
+        currentUser.uid && getPosts();
     }, [currentUser.uid]);
 
     return (
-        <div className='discussions'>
-            <div className='titleMenu'>
-                <h1>All Discussions</h1>
+        <Layout>
+            <div className='discussions'>
+                <div className='titleMenu'>
+                    <h1>All Discussions</h1>
+                </div>
+                {posts ? posts.map((item, index) =>
+                    <DiscussionModel key={index} item={item} />
+                ) : <div>
+                    <div className='individualDiscussion'>
+                        <div className='dicussionContainer'>
+                            <div className='imageAndDiscussion'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='discussionHolder'>
+                                    <div className='nameAndTimeSkeleton skeleton'></div>
+                                    <p className='discussionTextSkeleton skeleton'></p>
+                                    <div className='discussionStatistics'>
+                                        <div className='voteCounterSkeleton skeleton'></div>
+                                        <p className='commentCounterSkeleton skeleton'></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='replySkeleton skeleton'></div>
+                        </div>
+                    </div>
+                    <div className='individualDiscussion'>
+                        <div className='dicussionContainer'>
+                            <div className='imageAndDiscussion'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='discussionHolder'>
+                                    <div className='nameAndTimeSkeleton skeleton'></div>
+                                    <p className='discussionTextSkeleton skeleton'></p>
+                                    <div className='discussionStatistics'>
+                                        <div className='voteCounterSkeleton skeleton'></div>
+                                        <p className='commentCounterSkeleton skeleton'></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='replySkeleton skeleton'></div>
+                        </div>
+                    </div>
+                    <div className='individualDiscussion'>
+                        <div className='dicussionContainer'>
+                            <div className='imageAndDiscussion'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='discussionHolder'>
+                                    <div className='nameAndTimeSkeleton skeleton'></div>
+                                    <p className='discussionTextSkeleton skeleton'></p>
+                                    <div className='discussionStatistics'>
+                                        <div className='voteCounterSkeleton skeleton'></div>
+                                        <p className='commentCounterSkeleton skeleton'></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='replySkeleton skeleton'></div>
+                        </div>
+                    </div>
+                    <div className='individualDiscussion'>
+                        <div className='dicussionContainer'>
+                            <div className='imageAndDiscussion'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='discussionHolder'>
+                                    <div className='nameAndTimeSkeleton skeleton'></div>
+                                    <p className='discussionTextSkeleton skeleton'></p>
+                                    <div className='discussionStatistics'>
+                                        <div className='voteCounterSkeleton skeleton'></div>
+                                        <p className='commentCounterSkeleton skeleton'></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='replySkeleton skeleton'></div>
+                        </div>
+                    </div>
+                    <div className='individualDiscussion'>
+                        <div className='dicussionContainer'>
+                            <div className='imageAndDiscussion'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='discussionHolder'>
+                                    <div className='nameAndTimeSkeleton skeleton'></div>
+                                    <p className='discussionTextSkeleton skeleton'></p>
+                                    <div className='discussionStatistics'>
+                                        <div className='voteCounterSkeleton skeleton'></div>
+                                        <p className='commentCounterSkeleton skeleton'></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='replySkeleton skeleton'></div>
+                        </div>
+                    </div>
+                    <div className='individualDiscussion'>
+                        <div className='dicussionContainer'>
+                            <div className='imageAndDiscussion'>
+                                <div className='profilePicSkeleton skeleton'></div>
+                                <div className='discussionHolder'>
+                                    <div className='nameAndTimeSkeleton skeleton'></div>
+                                    <p className='discussionTextSkeleton skeleton'></p>
+                                    <div className='discussionStatistics'>
+                                        <div className='voteCounterSkeleton skeleton'></div>
+                                        <p className='commentCounterSkeleton skeleton'></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='replySkeleton skeleton'></div>
+                        </div>
+                    </div>
+                </div>}
             </div>
-            {posts ? posts.map((item, index) =>
-                <DiscussionModel key={index} item={item} />
-            ) : <div>
-                <div className='individualDiscussion'>
-                    <div className='dicussionContainer'>
-                        <div className='imageAndDiscussion'>
-                            <div className='profilePicSkeleton skeleton'></div>
-                            <div className='discussionHolder'>
-                                <div className='nameAndTimeSkeleton skeleton'></div>
-                                <p className='discussionTextSkeleton skeleton'></p>
-                                <div className='discussionStatistics'>
-                                    <div className='voteCounterSkeleton skeleton'></div>
-                                    <p className='commentCounterSkeleton skeleton'></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='replySkeleton skeleton'></div>
-                    </div>
-                </div>
-                <div className='individualDiscussion'>
-                    <div className='dicussionContainer'>
-                        <div className='imageAndDiscussion'>
-                            <div className='profilePicSkeleton skeleton'></div>
-                            <div className='discussionHolder'>
-                                <div className='nameAndTimeSkeleton skeleton'></div>
-                                <p className='discussionTextSkeleton skeleton'></p>
-                                <div className='discussionStatistics'>
-                                    <div className='voteCounterSkeleton skeleton'></div>
-                                    <p className='commentCounterSkeleton skeleton'></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='replySkeleton skeleton'></div>
-                    </div>
-                </div>
-                <div className='individualDiscussion'>
-                    <div className='dicussionContainer'>
-                        <div className='imageAndDiscussion'>
-                            <div className='profilePicSkeleton skeleton'></div>
-                            <div className='discussionHolder'>
-                                <div className='nameAndTimeSkeleton skeleton'></div>
-                                <p className='discussionTextSkeleton skeleton'></p>
-                                <div className='discussionStatistics'>
-                                    <div className='voteCounterSkeleton skeleton'></div>
-                                    <p className='commentCounterSkeleton skeleton'></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='replySkeleton skeleton'></div>
-                    </div>
-                </div>
-                <div className='individualDiscussion'>
-                    <div className='dicussionContainer'>
-                        <div className='imageAndDiscussion'>
-                            <div className='profilePicSkeleton skeleton'></div>
-                            <div className='discussionHolder'>
-                                <div className='nameAndTimeSkeleton skeleton'></div>
-                                <p className='discussionTextSkeleton skeleton'></p>
-                                <div className='discussionStatistics'>
-                                    <div className='voteCounterSkeleton skeleton'></div>
-                                    <p className='commentCounterSkeleton skeleton'></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='replySkeleton skeleton'></div>
-                    </div>
-                </div>
-                <div className='individualDiscussion'>
-                    <div className='dicussionContainer'>
-                        <div className='imageAndDiscussion'>
-                            <div className='profilePicSkeleton skeleton'></div>
-                            <div className='discussionHolder'>
-                                <div className='nameAndTimeSkeleton skeleton'></div>
-                                <p className='discussionTextSkeleton skeleton'></p>
-                                <div className='discussionStatistics'>
-                                    <div className='voteCounterSkeleton skeleton'></div>
-                                    <p className='commentCounterSkeleton skeleton'></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='replySkeleton skeleton'></div>
-                    </div>
-                </div>
-                <div className='individualDiscussion'>
-                    <div className='dicussionContainer'>
-                        <div className='imageAndDiscussion'>
-                            <div className='profilePicSkeleton skeleton'></div>
-                            <div className='discussionHolder'>
-                                <div className='nameAndTimeSkeleton skeleton'></div>
-                                <p className='discussionTextSkeleton skeleton'></p>
-                                <div className='discussionStatistics'>
-                                    <div className='voteCounterSkeleton skeleton'></div>
-                                    <p className='commentCounterSkeleton skeleton'></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='replySkeleton skeleton'></div>
-                    </div>
-                </div>
-            </div>}
-        </div>
+        </Layout>
 
     )
 }

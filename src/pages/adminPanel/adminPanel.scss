@@ -1,0 +1,61 @@
+.admin-panel {
+    display: flex;
+}
+
+.sidebarAdmin {
+    width: 200px;
+    background: #f4f4f4;
+    padding: 20px;
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        
+        li {
+            padding: 10px;
+            cursor: pointer;
+
+            &:hover {
+                background: #ddd;
+            }
+        }
+    }
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    }
+
+    button {
+        padding: 5px 10px;
+        background-color: red;
+        color: white;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+            background-color: darkred;
+        }
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    .analytics-tab {
+        p {
+            font-size: 18px;
+        }
+    }
+}

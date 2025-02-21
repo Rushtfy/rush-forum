@@ -36,6 +36,10 @@ const Header = () => {
         navigate("/profile");
     }
 
+    const goSettings = () => {
+        navigate("/settings");
+    }
+    
     useEffect(() => {
         const getProfilePicture = async () => {
             if (!currentUser?.uid) return;
@@ -67,7 +71,7 @@ const Header = () => {
                         <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" onClick={showDropdown} />
                         <div id="myDropdown" className="dropdownContent">
                             <p onClick={goProfile}><FontAwesomeIcon icon={faUser} />Profile</p>
-                            <p className='settings'><FontAwesomeIcon icon={faGear} />Settings</p>
+                            <p onClick={goSettings} className='settings'><FontAwesomeIcon icon={faGear} />Settings</p>
                             <p onClick={handleLogOut}><FontAwesomeIcon icon={faArrowRightFromBracket} />Log Out</p>
                         </div>
                     </div>

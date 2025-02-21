@@ -130,6 +130,10 @@
                         border-radius: 20px;
                     }
                 }
+
+                .liked {
+                    background-color: #6D54B5;
+                }
             }
         }
     }
@@ -243,8 +247,8 @@
         }
 
         .likesSkeleton {
-            width: 60px;
-            height: 15px;
+            width: 70px;
+            height: 25px;
         }
 
         .flexingSkeletonHolder{

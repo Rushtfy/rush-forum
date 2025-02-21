@@ -22,7 +22,6 @@ const Comments = ({ item, post, setComments }) => {
         await updateDoc(doc(db, "userPosts", post.ownerUid), {
             [post.id + ".comments." + item.id]: deleteField()
         });
-        // window.location.reload();
         setComments((prev) => prev.filter((comment) => comment.id !== item.id));
     }
 
@@ -71,7 +70,6 @@ const Comments = ({ item, post, setComments }) => {
                         <p>{item.likes.length}</p>
                         <FontAwesomeIcon icon={faArrowDown} />
                     </div>
-                    <p className='commentCounter'><FontAwesomeIcon icon={faCommentDots} />{item.replies.length}</p>
                 </div>
             </div>
         </div>

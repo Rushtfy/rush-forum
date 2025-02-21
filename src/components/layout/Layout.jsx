@@ -1,7 +1,7 @@
-import React from 'react'
-import Header from '../header/Header'
-import Sidebar from '../sidebar/Sidebar'
-import '../../pages/home/home.scss'
+import React from 'react';
+import Header from '../header/Header';
+import Sidebar from '../sidebar/Sidebar';
+import './layout.scss';
 
 const Layout = ({ children }) => {
   return (

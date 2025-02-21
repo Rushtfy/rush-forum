@@ -1,13 +1,15 @@
 import React, { useContext } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import Home from '../pages/home/Home'
-import Register from '../pages/register/Register'
-import Login from '../pages/login/Login'
 import { AuthContext } from '../components/context/AuthContext'
-import StartDiscussion from '../pages/startDiscussion/StartDiscussion'
+import AdminPanel from '../pages/adminPanel/AdminPanel'
+import Chat from '../pages/chat/Chat'
+import Discussions from '../pages/discussions/Discussions'
+import Login from '../pages/login/Login'
 import PostDetail from '../pages/postDetail/PostDetail'
 import Profile from '../pages/profile/Profile'
-import Chat from '../pages/chat/Chat'
+import Register from '../pages/register/Register'
+import StartDiscussion from '../pages/startDiscussion/StartDiscussion'
+import Settings from '../pages/settings/Settings'
 
 const Router = () => {
 
@@ -26,7 +28,7 @@ const Router = () => {
             <Routes>
                 <Route index element={
                     <ProtectedRoute>
-                        <Home />
+                        <Discussions />
                     </ProtectedRoute>
                 } />
                 <Route path='/register' element={<Register />} />
@@ -35,6 +37,8 @@ const Router = () => {
                 <Route path='/postDetail' element={<PostDetail />}/>
                 <Route path='/profile' element={<Profile />}/>
                 <Route path='/chat' element={<Chat />}/>
+                <Route path='/admin' element={<AdminPanel />}/>
+                <Route path='/settings' element={<Settings />}/>
             </Routes>
         </BrowserRouter>
     )

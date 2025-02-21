@@ -1,6 +1,6 @@
 import { faArrowDown, faArrowUp, faCommentDots, faReply } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { arrayRemove, arrayUnion, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
@@ -8,19 +8,18 @@ import { AuthContext } from '../context/AuthContext';
 import './discussionModel.scss';
 
 const DiscussionModel = ({ item }) => {
-
     const { currentUser } = useContext(AuthContext);
     const [name, setName] = useState(null);
     const [profilePicture, setProfilePicture] = useState("");
     const [liked, setLiked] = useState(false);
     const [disliked, setDisliked] = useState(false);
+    const [likeCount, setLikeCount] = useState(item.likes.length);
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!item?.ownerUid) return;
 
-        const getNames = async () => {
-            if (!item?.ownerUid) return;
-
+        const fetchUserDetails = async () => {
             try {
                 const userDoc = await getDoc(doc(db, "users", item.ownerUid));
                 if (userDoc.exists()) {
@@ -30,132 +29,111 @@ const DiscussionModel = ({ item }) => {
                 setLiked(item.likes.includes(currentUser.uid));
                 setDisliked(item.dislikes.includes(currentUser.uid));
             } catch (error) {
-                console.log("Someting went wrong:", error);
+                console.log("Something went wrong:", error);
             }
-        }
+        };
 
-        currentUser?.uid && getNames();
+        currentUser?.uid && fetchUserDetails();
     }, [item, currentUser?.uid]);
 
     const goDetail = () => {
         navigate('/postDetail', { state: item });
-    }
+    };
 
-    const handleUpvote = async (event) => {
-        event.stopPropagation();
+    const handleVote = async (e, type) => {
+        e.stopPropagation();
+    
+        if (!currentUser?.uid) return;
+    
+        const postDocRef = doc(db, "userPosts", item.ownerUid);
+        const postDoc = await getDoc(postDocRef);
+    
+        if (!postDoc.exists()) return alert("Something went wrong!");
+    
         try {
-            const postDocRef = doc(db, "userPosts", item.ownerUid);
-            const postDoc = await getDoc(postDocRef);
-
-            if (postDoc.exists()) {
-                const postData = postDoc.data();
-
-                const postLikes = postData[item.id]?.likes;
-                const postDislikes = postData[item.id]?.dislikes
-
-                if (postDislikes && postDislikes.includes(currentUser.uid)) {
-                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.remove("liked");
-
-                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id + ".dislikes"]: arrayRemove(currentUser.uid)
-                    });
+            const postData = postDoc.data();
+            const postLikes = postData[item.id]?.likes || [];
+            const postDislikes = postData[item.id]?.dislikes || [];
+    
+            let updates = {};
+    
+            if (type === "like") {
+                if (disliked) {
+                    updates[`${item.id}.dislikes`] = arrayRemove(currentUser.uid);
+                    setDisliked(false);
                 }
-                if (postLikes && postLikes.includes(currentUser.uid)) {
-                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML) - 1;
-
-                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.remove("liked");
-
-                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id + ".likes"]: arrayRemove(currentUser.uid)
-                    });
+                if (liked) {
+                    updates[`${item.id}.likes`] = arrayRemove(currentUser.uid);
+                    setLiked(false);
+                    setLikeCount(likeCount - 1);
                 } else {
-                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML) + 1;
-
-                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.add("liked");
-
-                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id + ".likes"]: arrayUnion(currentUser.uid)
-                    });
+                    updates[`${item.id}.likes`] = arrayUnion(currentUser.uid);
+                    setLiked(true);
+                    setLikeCount(likeCount + 1);
                 }
-            } else {
-                alert("Something went wrong!");
+            } else if (type === "dislike") {
+                if (liked) {
+                    updates[`${item.id}.likes`] = arrayRemove(currentUser.uid);
+                    setLiked(false);
+                    setLikeCount(likeCount - 1);
+                }
+                if (disliked) {
+                    updates[`${item.id}.dislikes`] = arrayRemove(currentUser.uid);
+                    setDisliked(false);
+                } else {
+                    updates[`${item.id}.dislikes`] = arrayUnion(currentUser.uid);
+                    setDisliked(true);
+                }
             }
+    
+            await updateDoc(postDocRef, updates);
         } catch (error) {
             alert("Something went wrong!");
-            document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(item.likes.length);
-            document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.remove("liked");
         }
-    }
-
-    const handleDownvote = async (event) => {
-        event.stopPropagation();
-        try {
-            const postDocRef = doc(db, "userPosts", item.ownerUid);
-            const postDoc = await getDoc(postDocRef);
-
-            if (postDoc.exists()) {
-                const postData = postDoc.data();
-
-                const postLikes = postData[item.id]?.likes;
-                const postDislikes = postData[item.id]?.dislikes
-
-                if (postLikes && postLikes.includes(currentUser.uid)) {
-                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML) - 1;
-
-                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[0].classList.remove("liked");
-
-                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id + ".likes"]: arrayRemove(currentUser.uid)
-                    });
-                }
-                if (postDislikes && postDislikes.includes(currentUser.uid)) {
-                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.remove("liked");
-
-                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id + ".dislikes"]: arrayRemove(currentUser.uid)
-                    });
-                } else {
-                    document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.add("liked");
-
-                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
-                        [item.id + ".dislikes"]: arrayUnion(currentUser.uid)
-                    });
-                }
-            } else {
-                alert("Something went wrong!");
-            }
-        } catch (error) {
-            alert("Something went wrong!");
-            document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[1].innerHTML = Number(item.likes.length);
-            document.getElementById(item.id).children[0].children[0].children[1].children[2].children[0].children[2].classList.remove("liked");
-        }
-    }
+    };    
 
     return (
-        <div className='individualDiscussion' onClick={goDetail} id={item.id}>
-            <div className='dicussionContainer'>
-                <div className='imageAndDiscussion'>
-                    <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
-                    <div className='discussionHolder'>
-                        <div className='nameAndTime'>
-                            <p className='displayName'>{name ? name : <div className='skeletonName'></div>}</p>
-                            <span>{item.time ? item.time : "N/A"}</span>
+        <div className="individualDiscussion" onClick={goDetail} id={item.id}>
+            <div className="dicussionContainer">
+                <div className="imageAndDiscussion">
+                    <img
+                        src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"}
+                        alt="profile"
+                    />
+                    <div className="discussionHolder">
+                        <div className="nameAndTime">
+                            <p className="displayName">{name || <div className="skeletonName"></div>}</p>
+                            <span>{item.time || "N/A"}</span>
                         </div>
-                        <p className='discussionText'>{item.title}</p>
-                        <div className='discussionStatistics'>
-                            <div className='voteCounter'>
-                                {liked ? <FontAwesomeIcon icon={faArrowUp} onClick={handleUpvote} className='liked' /> : <FontAwesomeIcon icon={faArrowUp} onClick={handleUpvote} />}
-                                <p>{item.likes.length}</p>
-                                {disliked ? <FontAwesomeIcon icon={faArrowDown} onClick={handleDownvote} className='liked' /> : <FontAwesomeIcon icon={faArrowDown} onClick={handleDownvote} />}
+                        <p className="discussionText">{item.title}</p>
+                        <div className="discussionStatistics">
+                            <div className="voteCounter">
+                                <FontAwesomeIcon
+                                    icon={faArrowUp}
+                                    className={liked ? "liked" : ""}
+                                    onClick={(e) => handleVote(e, "like")}
+                                />
+                                <p>{likeCount}</p>
+                                <FontAwesomeIcon
+                                    icon={faArrowDown}
+                                    className={disliked ? "liked" : ""}
+                                    onClick={(e) => handleVote(e, "dislike")}
+                                />
                             </div>
-                            <p className='commentCounter'><FontAwesomeIcon icon={faCommentDots} />{Object.keys(item.comments).length}</p>
+                            <p className="commentCounter">
+                                <FontAwesomeIcon icon={faCommentDots} />
+                                {Object.keys(item.comments).length}
+                            </p>
                         </div>
                     </div>
                 </div>
-                <button><FontAwesomeIcon icon={faReply} />Reply</button>
+                <button>
+                    <FontAwesomeIcon icon={faReply} />
+                    Reply
+                </button>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default DiscussionModel
+export default DiscussionModel;
