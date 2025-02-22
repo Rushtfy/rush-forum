@@ -96,6 +96,7 @@ const AdminPanel = () => {
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Profile Picture</th>
                                     <th>Email</th>
                                     <th>User ID</th>
                                     <th>Status</th>
@@ -106,6 +107,7 @@ const AdminPanel = () => {
                                 {users.map((user) => (
                                     <tr key={user.uid}>
                                         <td>{user.displayName}</td>
+                                        <td><img src={user.photoURL || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"}></img></td>
                                         <td>{user.email}</td>
                                         <td>{user.uid}</td>
                                         <td>{user.status || "Active"}</td>

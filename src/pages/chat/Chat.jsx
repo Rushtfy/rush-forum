@@ -6,6 +6,7 @@ import { AuthContext } from '../../components/context/AuthContext';
 import Layout from '../../components/layout/Layout';
 import { db } from '../../firebase';
 import './chat.scss';
+import { ChatContext } from '../../components/context/ChatContext';
 
 const Chat = () => {
 
@@ -14,6 +15,7 @@ const Chat = () => {
     const [chats, setChats] = useState([]);
 
     const { currentUser } = useContext(AuthContext);
+    const { data, dispatch } = useContext(ChatContext);
 
     const handleSearch = async () => {
         const q = query(collection(db, "users"), where("displayName", "==", username));
@@ -72,6 +74,10 @@ const Chat = () => {
         }
     }
 
+    const handleSelectUser = (u) => {
+        dispatch({ type: "CHANGE_USER", payload: u });
+    }
+
     useEffect(() => {
         const getChats = () => {
             const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
@@ -104,8 +110,8 @@ const Chat = () => {
                         </div>
                         <div className='chats'>
                             {Object.entries(chats)?.map(chat => (
-                                <div className='userChat' key={chat[0]}>
-                                    <img src={chat[1].photoURL ? chat[1].photoURL : "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
+                                <div className='userChat' key={chat[0]} onClick={() => handleSelectUser(chat[1].userInfo)}>
+                                    <img src={chat[1].userInfo.photoURL ? chat[1].userInfo.photoURL : "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
                                     <div className='userChatInfo'>
                                         <span>{chat[1].userInfo.displayName}</span>
                                         <p>{chat[1].userInfo.lastMessage?.text}</p>
@@ -116,6 +122,7 @@ const Chat = () => {
                     </div>
                     <div className='chatHeaderAndMessagesField'>
                         <div className='chatHeader'>
+                            <p>{data.user?.displayName}</p>
                         </div>
                         <div className='chatMessagesField'>
                             <div className='chatField'>

@@ -1,26 +1,18 @@
 import { faHouse, faMessage, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
 import { AuthContext } from '../context/AuthContext';
 import './sidebar.scss';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 const Sidebar = () => {
-
     const navigate = useNavigate();
+    const location = useLocation(); // Get current route
     const { currentUser } = useContext(AuthContext);
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    const goChat = () => {
-        navigate("/chat");
-    }
-
-    const goHome = () => {
-        navigate("/");
-    }
 
     useEffect(() => {
         if (!currentUser.uid) return;
@@ -53,9 +45,24 @@ const Sidebar = () => {
                         <span className="front"> Start a new Discussion </span>
                     </button>
                     <ul>
-                        <li onClick={goHome}><FontAwesomeIcon icon={faHouse} />Home</li>
-                        <li><FontAwesomeIcon icon={faUsers} />Following</li>
-                        <li onClick={goChat}><FontAwesomeIcon icon={faMessage} />Chat</li>
+                        <li 
+                            className={location.pathname === "/" ? "active" : ""} 
+                            onClick={() => navigate("/")}
+                        >
+                            <FontAwesomeIcon icon={faHouse} />Home
+                        </li>
+                        <li 
+                            className={location.pathname === "/following" ? "active" : ""}
+                            onClick={() => navigate("/following")}
+                        >
+                            <FontAwesomeIcon icon={faUsers} />Following
+                        </li>
+                        <li 
+                            className={location.pathname === "/chat" ? "active" : ""}
+                            onClick={() => navigate("/chat")}
+                        >
+                            <FontAwesomeIcon icon={faMessage} />Chat
+                        </li>
                     </ul>
                 </div>
                 <h2>Categories</h2>
@@ -76,7 +83,7 @@ const Sidebar = () => {
                 </ul>
             </div>
         </div>
-    )
+    );
 }
 
 export default Sidebar;

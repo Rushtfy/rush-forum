@@ -97,16 +97,16 @@
                     color: white;
                     font-weight: 500;
                     font-size: 17px;
-                    transition: .2s;
+                    transition: color 0.3s ease;
                     cursor: pointer;
 
                     &:hover {
                         color: #6A5BCD;
                     }
-                }
 
-                .test {
-                    color: #6A5BCD;
+                    &.active { 
+                        color: #6A5BCD;
+                    }
                 }
             }
         }

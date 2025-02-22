@@ -37,7 +37,7 @@ const DiscussionModel = ({ item }) => {
     }, [item, currentUser?.uid]);
 
     const goDetail = () => {
-        navigate('/postDetail', { state: item });
+        navigate(`/postDetail/${item.ownerUid}/${item.id}`);
     };
 
     const handleVote = async (e, type) => {
@@ -102,7 +102,7 @@ const DiscussionModel = ({ item }) => {
                     />
                     <div className="discussionHolder">
                         <div className="nameAndTime">
-                            <p className="displayName">{name || <div className="skeletonName"></div>}</p>
+                            <div className="displayName">{name || <div className="skeletonName"></div>}</div>
                             <span>{item.time || "N/A"}</span>
                         </div>
                         <p className="discussionText">{item.title}</p>

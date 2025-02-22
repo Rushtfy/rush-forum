@@ -34,8 +34,8 @@ const Router = () => {
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/create' element={<StartDiscussion />} />
-                <Route path='/postDetail' element={<PostDetail />}/>
-                <Route path='/profile' element={<Profile />}/>
+                <Route path='/postDetail/:ownerUid/:id' element={<PostDetail />}/>
+                <Route path='/profile/:uid' element={<Profile />}/>
                 <Route path='/chat' element={<Chat />}/>
                 <Route path='/admin' element={<AdminPanel />}/>
                 <Route path='/settings' element={<Settings />}/>

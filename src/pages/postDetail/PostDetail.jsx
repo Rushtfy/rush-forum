@@ -1,10 +1,10 @@
 import { faArrowDown, faArrowUp, faCommentDots, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { collection, doc, getDoc, getDocs, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuid } from "uuid";
 import Comments from '../../components/comments/Comments';
 import { AuthContext } from '../../components/context/AuthContext';
@@ -14,12 +14,11 @@ import './postDetail.scss';
 
 const PostDetail = () => {
 
-    const location = useLocation();
-    const itemOld = location.state;
+    const { ownerUid, id } = useParams();
     const navigate = useNavigate();
     const { currentUser } = useContext(AuthContext);
 
-    const [item, setItem] = useState(itemOld);
+    const [item, setItem] = useState(null);
     const [name, setName] = useState(null);
     const [profilePicture, setProfilePicture] = useState("");
     const [content, setContent] = useState("");
@@ -40,30 +39,45 @@ const PostDetail = () => {
     };
 
     useEffect(() => {
-        const getData = async () => {
-            if (!itemOld?.ownerUid) return;
+        const getItem = async () => {
+            if (!ownerUid || !id) {
+                navigate("/");
+                return;
+            } else {
+                try {
+                    const itemBackup = await getDoc(doc(db, "userPosts", ownerUid));
+                    setItem(itemBackup.data()?.[id]);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }
 
+        currentUser?.uid && getItem();
+    }, [currentUser?.uid]);
+
+    useEffect(() => {
+        const getData = async () => {
             try {
-                const userPostDoc = await getDoc(doc(db, "userPosts", itemOld.ownerUid));
-                const userDoc = await getDoc(doc(db, "users", itemOld.ownerUid));
+                const userPostDoc = await getDoc(doc(db, "userPosts", item.ownerUid));
+                const userDoc = await getDoc(doc(db, "users", item.ownerUid));
                 const allPostsSnapshot = await getDocs(collection(db, "userPosts"));
 
                 let allComments = [];
                 setComments(null);
                 allPostsSnapshot.forEach((doc) => {
-                    const postComments = doc.data()?.[itemOld.id]?.comments;
+                    const postComments = doc.data()?.[item.id]?.comments;
                     if (postComments) {
                         allComments.push(...Object.values(postComments));
                     }
                 });
 
-                const postData = userPostDoc.data()?.[itemOld.id] || {};
+                const postData = userPostDoc.data()?.[item.id] || {};
 
                 setLiked(postData.likes?.includes(currentUser.uid));
                 setDisliked(postData.dislikes?.includes(currentUser.uid));
 
                 setComments(allComments);
-                setItem(postData);
                 setName(userDoc.data()?.displayName || "Unknown");
                 setProfilePicture(userDoc.data()?.photoURL);
             } catch (error) {
@@ -71,44 +85,44 @@ const PostDetail = () => {
                 navigate("/");
             }
         };
-        
-        currentUser?.uid && getData();
 
-    }, [currentUser?.uid, itemOld]);
+        item && getData();
+
+    }, [item]);
 
     const handleUpvote = async () => {
         try {
-            const postDocRef = doc(db, "userPosts", itemOld.ownerUid);
+            const postDocRef = doc(db, "userPosts", item.ownerUid);
             const postDoc = await getDoc(postDocRef);
 
             if (postDoc.exists()) {
                 const postData = postDoc.data();
 
-                const postLikes = postData[itemOld.id]?.likes;
-                const postDislikes = postData[itemOld.id]?.dislikes;
+                const postLikes = postData[item.id]?.likes;
+                const postDislikes = postData[item.id]?.dislikes;
 
                 if (postDislikes && postDislikes.includes(currentUser.uid)) {
-                    await updateDoc(doc(db, "userPosts", itemOld.ownerUid), {
-                        [itemOld.id + ".dislikes"]: arrayRemove(currentUser.uid)
+                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
+                        [item.id + ".dislikes"]: arrayRemove(currentUser.uid)
                     });
                     setDisliked(false);
                 }
 
                 if (postLikes && postLikes.includes(currentUser.uid)) {
-                    await updateDoc(doc(db, "userPosts", itemOld.ownerUid), {
-                        [itemOld.id + ".likes"]: arrayRemove(currentUser.uid)
+                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
+                        [item.id + ".likes"]: arrayRemove(currentUser.uid)
                     });
                     setLiked(false);
                 } else {
-                    await updateDoc(doc(db, "userPosts", itemOld.ownerUid), {
-                        [itemOld.id + ".likes"]: arrayUnion(currentUser.uid)
+                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
+                        [item.id + ".likes"]: arrayUnion(currentUser.uid)
                     });
                     setLiked(true);
                 }
 
                 const updatedPostDoc = await getDoc(postDocRef);
                 const updatedPostData = updatedPostDoc.data();
-                setItem(updatedPostData[itemOld.id]);
+                setItem(updatedPostData[item.id]);
             }
         } catch (error) {
             console.log("Something went wrong:", error);
@@ -117,38 +131,38 @@ const PostDetail = () => {
 
     const handleDownvote = async () => {
         try {
-            const postDocRef = doc(db, "userPosts", itemOld.ownerUid);
+            const postDocRef = doc(db, "userPosts", item.ownerUid);
             const postDoc = await getDoc(postDocRef);
 
             if (postDoc.exists()) {
                 const postData = postDoc.data();
 
-                const postLikes = postData[itemOld.id]?.likes;
-                const postDislikes = postData[itemOld.id]?.dislikes;
+                const postLikes = postData[item.id]?.likes;
+                const postDislikes = postData[item.id]?.dislikes;
 
                 if (postLikes && postLikes.includes(currentUser.uid)) {
-                    await updateDoc(doc(db, "userPosts", itemOld.ownerUid), {
-                        [itemOld.id + ".likes"]: arrayRemove(currentUser.uid)
+                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
+                        [item.id + ".likes"]: arrayRemove(currentUser.uid)
                     });
                     setLiked(false);
                 }
 
-                
+
                 if (postDislikes && postDislikes.includes(currentUser.uid)) {
-                    await updateDoc(doc(db, "userPosts", itemOld.ownerUid), {
-                        [itemOld.id + ".dislikes"]: arrayRemove(currentUser.uid)
+                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
+                        [item.id + ".dislikes"]: arrayRemove(currentUser.uid)
                     });
                     setDisliked(false);
                 } else {
-                    await updateDoc(doc(db, "userPosts", itemOld.ownerUid), {
-                        [itemOld.id + ".dislikes"]: arrayUnion(currentUser.uid)
+                    await updateDoc(doc(db, "userPosts", item.ownerUid), {
+                        [item.id + ".dislikes"]: arrayUnion(currentUser.uid)
                     });
                     setDisliked(true);
                 }
 
                 const updatedPostDoc = await getDoc(postDocRef);
                 const updatedPostData = updatedPostDoc.data();
-                setItem(updatedPostData[itemOld.id]);
+                setItem(updatedPostData[item.id]);
             }
         } catch (error) {
             console.log("Something went wrong:", error);
@@ -183,8 +197,8 @@ const PostDetail = () => {
                 "time": currDate + " " + currTime
             };
 
-            await updateDoc(doc(db, "userPosts", itemOld.ownerUid), {
-                [itemOld.id + ".comments." + uniqueID]: newComment
+            await updateDoc(doc(db, "userPosts", item.ownerUid), {
+                [item.id + ".comments." + uniqueID]: newComment
             });
 
             setComments((prev) => [...prev, newComment]);
@@ -202,32 +216,32 @@ const PostDetail = () => {
                     <div className='discussionHolder'>
                         <div className='nameTimeIcon'>
                             <div className='nameAndTime'>
-                                <p className='displayName'>{name ? name : <div className='nameSkeleton skeleton'></div>}</p>
-                                <span>{item.time ? item.time : "N/A"}</span>
+                                <div className='displayName'>{name ? name : <div className='nameSkeleton skeleton'></div>}</div>
+                                <span>{item?.time ? item?.time : "N/A"}</span>
                             </div>
                             <FontAwesomeIcon icon={faEllipsis} />
                         </div>
-                        <h2 className='discussionTextTitle'>{item.title}</h2>
-                        {item.content ? (
-                            <p className='discussionTextBody' dangerouslySetInnerHTML={{ __html: item.content }}></p>
+                        <h2 className='discussionTextTitle'>{item?.title}</h2>
+                        {item?.content ? (
+                            <p className='discussionTextBody' dangerouslySetInnerHTML={{ __html: item?.content }}></p>
                         ) : (
                             <div className="contentSkeleton skeleton"></div>
                         )}
                         <div className='discussionStatistics'>
                             <div className='voteCounter'>
-                                <FontAwesomeIcon 
-                                    icon={faArrowUp} 
-                                    onClick={handleUpvote} 
-                                    className={liked ? 'liked' : ''} 
+                                <FontAwesomeIcon
+                                    icon={faArrowUp}
+                                    onClick={handleUpvote}
+                                    className={liked ? 'liked' : ''}
                                 />
-                                <p>{item.likes?.length || 0}</p>
-                                <FontAwesomeIcon 
-                                    icon={faArrowDown} 
-                                    onClick={handleDownvote} 
-                                    className={disliked ? 'liked' : ''} 
+                                <p>{item?.likes?.length || 0}</p>
+                                <FontAwesomeIcon
+                                    icon={faArrowDown}
+                                    onClick={handleDownvote}
+                                    className={disliked ? 'liked' : ''}
                                 />
                             </div>
-                            <p className='commentCounter'><FontAwesomeIcon icon={faCommentDots} />{item.comments?.length || 0}</p>
+                            <p className='commentCounter'><FontAwesomeIcon icon={faCommentDots} />{item?.comments?.length || 0}</p>
                         </div>
                     </div>
                 </div>
@@ -242,7 +256,7 @@ const PostDetail = () => {
                     <button className='postButton' onClick={handleComment}>Add Comment</button>
                 </div>
                 <div className='commentsSection'>
-                    {comments ? comments.map(item => <Comments item={item} post={itemOld} setComments={setComments} />)
+                    {comments ? comments.map(element => <Comments item={element} post={item} setComments={setComments} key={element.id}/>)
                         : <>
                             {[...Array(4)].map((_, index) => (
                                 <div className='commentBody' key={index}>

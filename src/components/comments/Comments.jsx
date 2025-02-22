@@ -19,10 +19,14 @@ const Comments = ({ item, post, setComments }) => {
     }
 
     const handleDelete = async () => {
-        await updateDoc(doc(db, "userPosts", post.ownerUid), {
-            [post.id + ".comments." + item.id]: deleteField()
-        });
-        setComments((prev) => prev.filter((comment) => comment.id !== item.id));
+        try {
+            await updateDoc(doc(db, "userPosts", post.ownerUid), {
+                [post.id + ".comments." + item.id]: deleteField()
+            });
+            setComments((prev) => prev.filter((comment) => comment.id !== item.id));
+        } catch (error) {
+            console.log("Something went wrong:", error);
+        }
     }
 
     useEffect(() => {
@@ -47,7 +51,7 @@ const Comments = ({ item, post, setComments }) => {
             <div className='commentHolder'>
                 <div className='nameTimeIcon'>
                     <div className='nameAndTime'>
-                        <p className='displayName'>{name ? name : <div className='nameSkeleton skeleton'></div>}</p>
+                        <div className='displayName'>{name ? name : <div className='nameSkeleton skeleton'></div>}</div>
                         <span>{item.time ? item.time : "N/A"}</span>
                     </div>
                     <div className="dropdown">

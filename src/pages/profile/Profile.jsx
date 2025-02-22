@@ -1,4 +1,5 @@
-import { doc, getDoc, updateDoc, collection, getDocs } from 'firebase/firestore';
+import axios from 'axios';
+import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../components/context/AuthContext';
 import Layout from '../../components/layout/Layout';
@@ -7,7 +8,6 @@ import './profile.scss';
 
 const Profile = () => {
     const { currentUser } = useContext(AuthContext);
-    const [base64, setBase64] = useState("");
     const [profilePicture, setProfilePicture] = useState("");
     const [activeTab, setActiveTab] = useState("posts");
     const [userData, setUserData] = useState({
@@ -18,30 +18,40 @@ const Profile = () => {
         downvoted: []
     });
 
+    const [file, setFile] = useState(null);
+    const [imageUrl, setImageUrl] = useState("");
+
     const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => setBase64(reader.result);
-            reader.onerror = (error) => console.error("Error converting to Base64:", error);
-        }
+        const fileImage = event.target.files[0];
+        setFile(fileImage);
     };
 
     useEffect(() => {
-        const updateProfilePicture = async () => {
-            if (!base64 || !currentUser?.uid) return;
+        if (file) {
+            uploadImage();
+        }
+    }, [file]);
 
-            try {
-                await updateDoc(doc(db, "users", currentUser.uid), { "photoURL": base64 });
-                console.log("Profile Picture updated successfully");
-            } catch (error) {
-                console.log("Something went wrong:", error);
-            }
-        };
+    const uploadImage = async () => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'profile_preset');
+        formData.append('cloud_name', 'dk53jsnru');
 
-        updateProfilePicture();
-    }, [base64]);
+        try {
+            const response = await axios.post(
+                'https://api.cloudinary.com/v1_1/dk53jsnru/image/upload',
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                }
+            );
+            setImageUrl(response.data.secure_url);
+            await updateDoc(doc(db, "users", currentUser.uid), { "photoURL": response.data.secure_url });
+        } catch (error) {
+            console.error('Error uploading image:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -88,7 +98,7 @@ const Profile = () => {
         };
 
         fetchData();
-    }, [currentUser?.uid]);
+    }, [currentUser?.uid, imageUrl]);
 
     return (
         <Layout>
@@ -97,7 +107,7 @@ const Profile = () => {
                     <div className='userCredentials'>
                         <input type="file" accept="image/*" id='imageSelector' onChange={handleFileChange} />
                         <label htmlFor="imageSelector">
-                            <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
+                            <img src={profilePicture  || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} />
                         </label>
                         <h3>{currentUser.displayName}</h3>
                     </div>
@@ -131,7 +141,7 @@ const Profile = () => {
                             <div className='scrollableContent'>
                                 {userData.comments.length ? userData.comments.map(comment => (
                                     <div key={comment.id} className='commentItem'>
-                                        <p dangerouslySetInnerHTML={{__html:comment.content}}></p>
+                                        <p dangerouslySetInnerHTML={{ __html: comment.content }}></p>
                                     </div>
                                 )) : <p>No comments available.</p>}
                             </div>
