@@ -188,7 +188,7 @@ const Profile = () => {
                     <ul>
                         <li className={activeTab === "posts" ? "active" : ""} onClick={() => setActiveTab("posts")}>Posts</li>
                         <li className={activeTab === "comments" ? "active" : ""} onClick={() => setActiveTab("comments")}>Comments</li>
-                        <li className={activeTab === "saved" ? "active" : ""} onClick={() => setActiveTab("saved")}>Saved</li>
+                        {currentUser.uid === uid && <li className={activeTab === "saved" ? "active" : ""} onClick={() => setActiveTab("saved")}>Saved</li>}
                         <li className={activeTab === "upvoted" ? "active" : ""} onClick={() => setActiveTab("upvoted")}>Upvoted</li>
                         <li className={activeTab === "downvoted" ? "active" : ""} onClick={() => setActiveTab("downvoted")}>Downvoted</li>
                     </ul>
