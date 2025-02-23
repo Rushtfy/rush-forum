@@ -1,14 +1,19 @@
 import axios from 'axios';
-import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../components/context/AuthContext';
 import Layout from '../../components/layout/Layout';
-import { db } from '../../firebase';
+import { auth, db } from '../../firebase';
 import './profile.scss';
+import { updateProfile } from 'firebase/auth';
+import { data, useParams } from 'react-router-dom';
 
 const Profile = () => {
     const { currentUser } = useContext(AuthContext);
+    const { uid } = useParams();
+
     const [profilePicture, setProfilePicture] = useState("");
+    const [userName, setUserName] = useState("");
     const [activeTab, setActiveTab] = useState("posts");
     const [userData, setUserData] = useState({
         posts: [],
@@ -20,6 +25,8 @@ const Profile = () => {
 
     const [file, setFile] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
+    const [isFollowing, setIsFollowing] = useState(false);
+    const [followersCount, setFollowersCount] = useState(0);
 
     const handleFileChange = (event) => {
         const fileImage = event.target.files[0];
@@ -48,8 +55,47 @@ const Profile = () => {
             );
             setImageUrl(response.data.secure_url);
             await updateDoc(doc(db, "users", currentUser.uid), { "photoURL": response.data.secure_url });
+            await updateProfile(auth.currentUser, { photoURL: response.data.secure_url });
         } catch (error) {
             console.error('Error uploading image:', error);
+        }
+    };
+
+    const handleFollow = async () => {
+        if (!currentUser?.uid || currentUser.uid === uid) return;
+
+        try {
+            await updateDoc(doc(db, "users", uid), {
+                followers: arrayUnion(currentUser.uid),
+            });
+
+            await updateDoc(doc(db, "users", currentUser.uid), {
+                following: arrayUnion(uid),
+            });
+
+            setIsFollowing(true);
+            setFollowersCount(prev => prev + 1);
+        } catch (error) {
+            console.error("Error following user:", error);
+        }
+    };
+
+    const handleUnfollow = async () => {
+        if (!currentUser?.uid || currentUser.uid === uid) return;
+
+        try {
+            await updateDoc(doc(db, "users", uid), {
+                followers: arrayRemove(currentUser.uid),
+            });
+
+            await updateDoc(doc(db, "users", currentUser.uid), {
+                following: arrayRemove(uid),
+            });
+
+            setIsFollowing(false);
+            setFollowersCount(prev => prev - 1);
+        } catch (error) {
+            console.error("Error unfollowing user:", error);
         }
     };
 
@@ -58,11 +104,19 @@ const Profile = () => {
             if (!currentUser?.uid) return;
 
             try {
-                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                const userDoc = await getDoc(doc(db, "users", uid));
                 const profilePic = userDoc.data()?.photoURL || "";
+                const userName = userDoc.data().displayName;
                 setProfilePicture(profilePic);
+                setUserName(userName);
+                setFollowersCount(userDoc.data()?.followers?.length || 0);
+
+                if(userDoc.data()?.followers?.includes(currentUser.uid)) {
+                    setIsFollowing(true);
+                }
 
                 const postsSnapshot = await getDocs(collection(db, "userPosts"));
+                const userData = await getDoc(doc(db, "users", currentUser.uid));
                 let userPosts = [];
                 let userComments = [];
                 let savedPosts = [];
@@ -73,17 +127,28 @@ const Profile = () => {
                     const postData = Object.values(doc.data());
 
                     postData.forEach((post) => {
-                        if (post.ownerUid === currentUser.uid) userPosts.push(post);
+                        if (post.ownerUid === uid) userPosts.push(post);
                         if (post.comments) {
                             Object.values(post.comments).forEach((comment) => {
-                                if (comment.senderUid === currentUser.uid) userComments.push(comment);
+                                if (comment.senderUid === uid) userComments.push(comment);
                             });
                         }
-                        if (post.likes?.includes(currentUser.uid)) upvotedPosts.push(post);
-                        if (post.dislikes?.includes(currentUser.uid)) downvotedPosts.push(post);
-                        if (post.savedBy?.includes(currentUser.uid)) savedPosts.push(post);
+                        if (post.likes?.includes(uid)) upvotedPosts.push(post);
+                        if (post.dislikes?.includes(uid)) downvotedPosts.push(post);
                     });
                 });
+                
+                if (userData.data()?.savedPosts?.length) {
+                    const savedPostsPromises = userData.data().savedPosts.map(async (item) => {
+
+                        const postDoc = await getDoc(doc(db, "userPosts", item.ownerUid));
+
+                        return postDoc.data()[item.postId]
+                    });
+                
+                    const resolvedSavedPosts = await Promise.all(savedPostsPromises);
+                    savedPosts = resolvedSavedPosts.filter(post => post !== null);
+                }
 
                 setUserData({
                     posts: userPosts,
@@ -105,11 +170,20 @@ const Profile = () => {
             <div className='containerProfileNav'>
                 <div className='profileHeader'>
                     <div className='userCredentials'>
-                        <input type="file" accept="image/*" id='imageSelector' onChange={handleFileChange} />
+                        {currentUser.uid === uid && <input type="file" accept="image/*" id='imageSelector' onChange={handleFileChange} />}
                         <label htmlFor="imageSelector">
                             <img src={profilePicture  || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} />
                         </label>
-                        <h3>{currentUser.displayName}</h3>
+                        <h3>{userName && userName}</h3>
+                        <p className='followCounter'>{followersCount} Followers</p>
+
+                        {currentUser.uid !== uid && (
+                            isFollowing ? (
+                                <button className="unfollowBtn" onClick={handleUnfollow}>Unfollow</button>
+                            ) : (
+                                <button className="followBtn" onClick={handleFollow}>Follow</button>
+                            )
+                        )}
                     </div>
                     <ul>
                         <li className={activeTab === "posts" ? "active" : ""} onClick={() => setActiveTab("posts")}>Posts</li>

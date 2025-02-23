@@ -15,6 +15,7 @@
 
         .chatSidebar {
             background-color: #3e3578;
+            min-width: max-content;
             width: 25%;
             transition: .2s;
 
@@ -28,6 +29,9 @@
             }
 
             .chatSearchUser {
+                border-bottom: 1px solid #bbb;
+                width: 100%;
+
                 input {
                     background-color: transparent;
                     border: none;
@@ -70,11 +74,13 @@
             }
 
             .chats {
+                width: max-content;
                 .userChat {
                     display: flex;
                     align-items: center;
                     padding: 10px;
                     transition: .2s;
+                    width: max-content;
                     cursor: pointer;
 
                     img {
@@ -124,6 +130,9 @@
 
                 .chatField {
                     height: 90%;
+                    padding: 10px;
+                    overflow: scroll;
+                    overflow-x: hidden;
                 }
 
                 .inputField {
@@ -134,7 +143,7 @@
 
                     input {
                         height: 100%;
-                        width: 85%;
+                        width: 100%;
                         border: none;
                         padding: 0 10px;
                         font-size: 17px;
@@ -144,7 +153,7 @@
                     }
 
                     .chatMedia {
-                        width: 15%;
+                        width: min-content;
                         display: flex;
                         align-items: center;
                         justify-content: center;
@@ -164,9 +173,31 @@
                             border: none;
                             color: white;
                             border-radius: 5px;
+                            margin-right: 5px;
                             cursor: pointer;
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .chatSidebar {
+        width: 70px !important;
+        .chatSearchUser {
+            width: 70px !important;
+        }
+
+        .chatSidebarHeader {
+            display: none !important;
+        }
+
+        .chats {
+            .userChat {
+                .userChatInfo {
+                    display: none;
                 }
             }
         }

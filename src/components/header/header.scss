@@ -29,15 +29,19 @@
         .search {
             box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
             border-radius: 10px;
+            display: flex;
+            align-items: center;
+            width: 40%;
+            position: relative;
 
             input {
                 padding: 12px;
                 width: 600px;
-                border-top-left-radius: 10px;
-                border-bottom-left-radius: 10px;
+                border-radius: 10px;
                 border: none;
                 background-color: #303233;
                 color: white;
+                outline: none;
 
                 &::placeholder {
                     color: gray;
@@ -52,6 +56,45 @@
                 border-top-right-radius: 10px;
                 border-bottom-right-radius: 10px;
                 cursor: pointer;
+            }
+        }
+
+        .searchResults {
+            position: absolute;
+            top: 120%;
+            left: 0;
+            background-color: #303233;
+            border: 1px solid rgb(103, 103, 103);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+            width: 100%;
+            border-radius: 5px;
+            padding: 10px;
+            display: flex;
+            gap: 20px;
+            flex-direction: column;
+
+            .searchResultsSection {
+                h3 {
+                    color: #6A5BCD;
+                    font-size: 1.2rem;
+                    margin-bottom: 10px;
+                }
+
+                ul {
+                    list-style: none;
+                    padding: 0;
+
+                    li {
+                        padding: 8px;
+                        color: white;
+                        cursor: pointer;
+
+                        &:hover {
+                            background-color: #6A5BCD;
+                        }
+                    }
+                }
             }
         }
 
@@ -127,11 +170,25 @@
     }
 }
 
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 530px) {
+    .header {
+        .headerContainer {
+            .logo {
+                display: none;
+            }
+
+            .search {
+                width: 80%;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 530px) {
     .header {
         .headerContainer {
             .search {
-                display: none;
+                width: 75%;
             }
         }
     }

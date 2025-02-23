@@ -1,17 +1,44 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUsers, faClipboard, faChartLine } from "@fortawesome/free-solid-svg-icons";
 import { db } from "../../firebase";
 import { collection, getDocs, doc, updateDoc, getDoc, deleteField } from "firebase/firestore";
 import './adminPanel.scss';
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../components/context/AuthContext";
 
 const AdminPanel = () => {
+    const { currentUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+
     const [users, setUsers] = useState([]);
     const [posts, setPosts] = useState([]);
     const [analytics, setAnalytics] = useState({});
     const [activeTab, setActiveTab] = useState("users");
 
     useEffect(() => {
+        const verifyAdmin = async () => {
+            try {
+                const userData = await getDoc(doc(db, "users", currentUser.uid));
+
+                if (!userData.exists() || userData.data().role !== "admin") {
+                    navigate('/');
+                    return;
+                }
+                
+                fetchUsers();
+                fetchPosts();
+                fetchAnalytics();
+            } catch (error) {
+                console.log("Error verifying admin role:", error);
+                navigate('/');
+            }
+        };
+
+        if (currentUser && currentUser.uid) {
+            verifyAdmin();
+        }
+
         const fetchUsers = async () => {
             try {
                 const usersSnapshot = await getDocs(collection(db, "users"));
@@ -26,11 +53,9 @@ const AdminPanel = () => {
             try {
                 const postsSnapshot = await getDocs(collection(db, "userPosts"));
                 let postsData = [];
-
                 postsSnapshot.forEach((doc) => {
                     postsData.push(...Object.values(doc.data()));
                 });
-
                 setPosts(postsData);
             } catch (error) {
                 console.log("Error fetching posts:", error);
@@ -44,10 +69,7 @@ const AdminPanel = () => {
             });
         };
 
-        fetchUsers();
-        fetchPosts();
-        fetchAnalytics();
-    }, [users, posts]);
+    }, [currentUser, users, posts, navigate]);
 
     const banUser = async (userId) => {
         try {
@@ -56,6 +78,16 @@ const AdminPanel = () => {
             alert("User banned successfully");
         } catch (error) {
             console.log("Error banning user:", error);
+        }
+    };
+
+    const unbanUser = async (userId) => {
+        try {
+            const userDoc = doc(db, "users", userId);
+            await updateDoc(userDoc, { status: "active" });
+            alert("User unbanned successfully");
+        } catch (error) {
+            console.log("Error unbanning user:", error);
         }
     };
 
@@ -100,6 +132,7 @@ const AdminPanel = () => {
                                     <th>Email</th>
                                     <th>User ID</th>
                                     <th>Status</th>
+                                    <th>Role</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -107,12 +140,17 @@ const AdminPanel = () => {
                                 {users.map((user) => (
                                     <tr key={user.uid}>
                                         <td>{user.displayName}</td>
-                                        <td><img src={user.photoURL || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"}></img></td>
+                                        <td><img src={user.photoURL || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="Profile" /></td>
                                         <td>{user.email}</td>
                                         <td>{user.uid}</td>
-                                        <td>{user.status || "Active"}</td>
+                                        <td>{user.status || "active"}</td>
+                                        <td>{user.role}</td>
                                         <td>
-                                            <button onClick={() => banUser(user.uid)}>Ban</button>
+                                            {user.status === "banned" ? (
+                                                <button onClick={() => unbanUser(user.uid)}>Unban</button>
+                                            ) : (
+                                                <button onClick={() => banUser(user.uid)}>Ban</button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}

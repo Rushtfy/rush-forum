@@ -1,10 +1,10 @@
-import { faArrowDown, faArrowUp, faCommentDots, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faBookmark, faCommentDots, faEllipsis, faFlag, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, deleteField, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuid } from "uuid";
 import Comments from '../../components/comments/Comments';
 import { AuthContext } from '../../components/context/AuthContext';
@@ -25,6 +25,7 @@ const PostDetail = () => {
     const [comments, setComments] = useState(null);
     const [liked, setLiked] = useState(false);
     const [disliked, setDisliked] = useState(false);
+    const [dropdown, setDropdown] = useState(false);
 
     const modules = {
         toolbar: [
@@ -37,6 +38,11 @@ const PostDetail = () => {
             ['clean']
         ]
     };
+
+    const toggleDropdown = async (e) => {
+        e.stopPropagation();
+        setDropdown((prev) => !prev);
+    }
 
     useEffect(() => {
         const getItem = async () => {
@@ -208,6 +214,50 @@ const PostDetail = () => {
         }
     }
 
+    const deletePost = async () => {
+        setDropdown((prev) => !prev);
+
+        try {
+            const postDoc = doc(db, "userPosts", item.ownerUid);
+            await updateDoc(postDoc, {
+                [item.id]: deleteField()
+            });
+            navigate('/');
+
+        } catch (error) {
+            console.log("Error removing post:", error);
+        }
+    };
+
+    const savePost = async () => {
+        setDropdown((prev) => !prev);
+
+        try {
+            const postData = {
+                postId: item.id,
+                ownerUid: item.ownerUid
+            };
+
+            const userDocRef = doc(db, "users", currentUser.uid);
+            const userDoc = await getDoc(userDocRef);
+
+            const savedPosts = userDoc.data()?.savedPosts || [];
+
+            const isPostAlreadySaved = savedPosts.some(post => post.postId === item.id && post.ownerUid === item.ownerUid);
+
+            if (!isPostAlreadySaved) {
+                await updateDoc(userDocRef, {
+                    savedPosts: arrayUnion(postData),
+                });
+                alert("Post saved successfully!");
+            } else {
+                alert("Post is already saved.");
+            }
+        } catch (error) {
+            console.error("Error saving the post:", error);
+        }
+    };
+
     return (
         <Layout>
             <div className='containerPostDetail'>
@@ -219,7 +269,18 @@ const PostDetail = () => {
                                 <div className='displayName'>{name ? name : <div className='nameSkeleton skeleton'></div>}</div>
                                 <span>{item?.time ? item?.time : "N/A"}</span>
                             </div>
-                            <FontAwesomeIcon icon={faEllipsis} />
+                            <div className="dropdown">
+                                <FontAwesomeIcon icon={faEllipsis} onClick={toggleDropdown} className='threeDots' />
+                                {dropdown && (
+                                    <div className="dropdownContent">
+                                        <p><FontAwesomeIcon icon={faFlag} />Report</p>
+                                        <p onClick={savePost}><FontAwesomeIcon icon={faBookmark} />Save</p>
+                                        {item.ownerUid === currentUser?.uid && (
+                                            <p onClick={deletePost}><FontAwesomeIcon icon={faTrash} />Delete</p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         <h2 className='discussionTextTitle'>{item?.title}</h2>
                         {item?.content ? (
@@ -241,7 +302,7 @@ const PostDetail = () => {
                                     className={disliked ? 'liked' : ''}
                                 />
                             </div>
-                            <p className='commentCounter'><FontAwesomeIcon icon={faCommentDots} />{item?.comments?.length || 0}</p>
+                            <p className='commentCounter'><FontAwesomeIcon icon={faCommentDots} />{item && Object.keys(item?.comments).length || 0}</p>
                         </div>
                     </div>
                 </div>
@@ -256,7 +317,7 @@ const PostDetail = () => {
                     <button className='postButton' onClick={handleComment}>Add Comment</button>
                 </div>
                 <div className='commentsSection'>
-                    {comments ? comments.map(element => <Comments item={element} post={item} setComments={setComments} key={element.id}/>)
+                    {comments ? comments.map(element => <Comments item={element} post={item} setComments={setComments} key={element.id} />)
                         : <>
                             {[...Array(4)].map((_, index) => (
                                 <div className='commentBody' key={index}>

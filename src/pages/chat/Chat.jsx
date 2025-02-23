@@ -1,18 +1,24 @@
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore';
+import { arrayUnion, collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, setDoc, Timestamp, updateDoc, where } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../components/context/AuthContext';
 import Layout from '../../components/layout/Layout';
 import { db } from '../../firebase';
 import './chat.scss';
 import { ChatContext } from '../../components/context/ChatContext';
+import MessageModel from '../../components/messageModel/MessageModel';
+import { v4 as uuid } from "uuid";
+import axios from 'axios';
 
 const Chat = () => {
-
     const [username, setUsername] = useState("");
     const [user, setUser] = useState(null);
     const [chats, setChats] = useState([]);
+    const [messages, setMessages] = useState([]);
+    const [text, setText] = useState("");
+    const [img, setImg] = useState(null);
+    const [isSending, setIsSending] = useState(false);
 
     const { currentUser } = useContext(AuthContext);
     const { data, dispatch } = useContext(ChatContext);
@@ -26,13 +32,13 @@ const Chat = () => {
                 setUser(doc.data());
             });
         } catch (error) {
-            alert(error);
+            alert("Error searching for user:", error.message);
         }
-    }
+    };
 
     const handleKey = (e) => {
-        e.code === "Enter" && handleSearch();
-    }
+        if (e.code === "Enter") handleSearch();
+    };
 
     const handleSelect = async () => {
         const combinedId =
@@ -68,15 +74,78 @@ const Chat = () => {
                     },
                     [combinedId + ".date"]: serverTimestamp()
                 });
+                setUser(null);
             }
         } catch (error) {
             console.log("Something went wrong:", error);
         }
-    }
+    };
 
     const handleSelectUser = (u) => {
         dispatch({ type: "CHANGE_USER", payload: u });
-    }
+    };
+
+    const handleSend = async () => {
+        if (isSending) return;
+        setIsSending(true);
+        try {
+            if (img) {
+                const formData = new FormData();
+                formData.append('file', img);
+                formData.append('upload_preset', 'profile_preset');
+                formData.append('cloud_name', 'dk53jsnru');
+
+                const response = await axios.post(
+                    'https://api.cloudinary.com/v1_1/dk53jsnru/image/upload',
+                    formData,
+                    {
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                    }
+                );
+                
+                await updateDoc(doc(db, "chats", data.chatId), {
+                    "messages": arrayUnion({
+                        "id": uuid(),
+                        text,
+                        "senderId": currentUser.uid,
+                        "date": Timestamp.now(),
+                        "img": response.data.secure_url
+                    })
+                });
+            } else {
+                await updateDoc(doc(db, "chats", data.chatId), {
+                    "messages": arrayUnion({
+                        "id": uuid(),
+                        text,
+                        "senderId": currentUser.uid,
+                        "date": Timestamp.now()
+                    })
+                });
+            }
+
+            await updateDoc(doc(db, "userChats", currentUser.uid), {
+                [data.chatId + ".lastMessage"]: {
+                    text
+                },
+                [data.chatId + ".date"]: serverTimestamp()
+            });
+
+            await updateDoc(doc(db, "userChats", data.user.uid), {
+                [data.chatId + ".lastMessage"]: {
+                    text
+                },
+                [data.chatId + ".date"]: serverTimestamp()
+            });
+
+            setText("");
+            setImg(null);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            alert('Failed to send message. Please try again.');
+        } finally {
+            setIsSending(false);
+        }
+    };
 
     useEffect(() => {
         const getChats = () => {
@@ -86,11 +155,21 @@ const Chat = () => {
 
             return () => {
                 unsub();
-            }
-        }
+            };
+        };
 
         currentUser.uid && getChats();
     }, [currentUser.uid]);
+
+    useEffect(() => {
+        const unsub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
+            doc.exists() && setMessages(doc.data().messages);
+        });
+
+        return () => {
+            unsub();
+        };
+    }, [data.chatId]);
 
     return (
         <Layout>
@@ -102,19 +181,20 @@ const Chat = () => {
                         </div>
                         <div className='chatSearchUser'>
                             <input type="text" placeholder='Find a user' onKeyDown={handleKey} onChange={(e) => setUsername(e.target.value)} />
-                            {user &&
+                            {user && (
                                 <div className='user' onClick={handleSelect}>
                                     <img src={user?.photoURL ? user?.photoURL : "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
                                     <p>{user?.displayName}</p>
-                                </div>}
+                                </div>
+                            )}
                         </div>
                         <div className='chats'>
-                            {Object.entries(chats)?.map(chat => (
+                            {Object.entries(chats)?.sort((a, b) => b[1].date - a[1].date).map(chat => (
                                 <div className='userChat' key={chat[0]} onClick={() => handleSelectUser(chat[1].userInfo)}>
                                     <img src={chat[1].userInfo.photoURL ? chat[1].userInfo.photoURL : "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
                                     <div className='userChatInfo'>
                                         <span>{chat[1].userInfo.displayName}</span>
-                                        <p>{chat[1].userInfo.lastMessage?.text}</p>
+                                        <p>{chat[1].lastMessage?.text}</p>
                                     </div>
                                 </div>
                             ))}
@@ -126,13 +206,18 @@ const Chat = () => {
                         </div>
                         <div className='chatMessagesField'>
                             <div className='chatField'>
-
+                                {messages.map(m => (
+                                    <MessageModel message={m} key={m.id} />
+                                ))}
                             </div>
                             <div className='inputField'>
-                                <input type="text" placeholder='Message...' />
+                                <input type="text" placeholder='Message...' onChange={(e) => setText(e.target.value)} value={text} />
                                 <div className='chatMedia'>
-                                    <FontAwesomeIcon icon={faImage} style={{ cursor: "pointer" }} />
-                                    <button>Send</button>
+                                    <input type="file" style={{ display: "none" }} id="file" onChange={(e) => setImg(e.target.files[0])} />
+                                    <label htmlFor="file">
+                                        <FontAwesomeIcon icon={faImage} style={{ cursor: "pointer" }} />
+                                    </label>
+                                    <button onClick={handleSend} disabled={isSending}>Send</button>
                                 </div>
                             </div>
                         </div>
@@ -140,7 +225,7 @@ const Chat = () => {
                 </div>
             </div>
         </Layout>
-    )
-}
+    );
+};
 
-export default Chat
+export default Chat;

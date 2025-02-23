@@ -3,6 +3,8 @@ import { AuthContext } from '../../components/context/AuthContext';
 import './settings.scss';
 import { updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, updateProfile } from 'firebase/auth';
 import Layout from '../../components/layout/Layout';
+import { db } from '../../firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 const Settings = () => {
     const { currentUser } = useContext(AuthContext);
@@ -17,6 +19,11 @@ const Settings = () => {
             setLoading(true);
             if (userName !== currentUser.displayName) {
                 await updateProfile(currentUser, { displayName: userName });
+
+                const userDocRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userDocRef, {
+                    displayName: userName,
+                });
             }
 
             if (email !== currentUser.email) {

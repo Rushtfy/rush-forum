@@ -40,6 +40,11 @@ const DiscussionModel = ({ item }) => {
         navigate(`/postDetail/${item.ownerUid}/${item.id}`);
     };
 
+    const goProfile = (e) => {
+        e.stopPropagation();
+        navigate(`/profile/${item.ownerUid}`);
+    };
+
     const handleVote = async (e, type) => {
         e.stopPropagation();
     
@@ -99,10 +104,11 @@ const DiscussionModel = ({ item }) => {
                     <img
                         src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"}
                         alt="profile"
+                        onClick={(e) => goProfile(e)}
                     />
                     <div className="discussionHolder">
                         <div className="nameAndTime">
-                            <div className="displayName">{name || <div className="skeletonName"></div>}</div>
+                            <div className="displayName" onClick={(e) => goProfile(e)}>{name || <div className="skeletonName"></div>}</div>
                             <span>{item.time || "N/A"}</span>
                         </div>
                         <p className="discussionText">{item.title}</p>

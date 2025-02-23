@@ -1,79 +1,127 @@
-.formBody{
+.formBody {
     background-color: #615D73;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    .formContainer{
+    padding: 20px;
+
+    .formContainer {
         color: white;
         background-color: #2C2638;
         padding: 20px;
         border-radius: 10px;
         display: flex;
         align-items: center;
-        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
-        img{
-            width: 500px;
+        box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
+        max-width: max-content;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+
+        img {
+            width: 400px;
             border-radius: 5px;
-            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
+            box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
+
+            @media screen and (max-width: 768px) {
+                width: 300px;
+            }
+
+            @media screen and (max-width: 480px) {
+                display: none;
+            }
         }
-        .formItems{
+
+        .formItems {
             display: flex;
             flex-direction: column;
             text-align: center;
             padding: 0 40px;
-            width: 450px;
+            width: 400px;
+            max-width: 100%;
             gap: 20px;
-            .logo{
-                font-size: 30px;
-                color: white;
+
+            .logo {
+                font-size: 28px;
                 font-weight: 500;
             }
-            .title{
+
+            .title {
                 font-size: 15px;
                 color: gray;
             }
-            form{
+
+            form {
                 display: flex;
                 flex-direction: column;
-                gap: 30px;
-                input{
-                    padding: 15px;
+                gap: 20px;
+
+                input {
+                    padding: 12px;
                     border: none;
                     background-color: #3C364C;
                     color: white;
-                    font-size: 15px;
+                    font-size: 14px;
                     border-radius: 5px;
-                    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
-                    &::placeholder{
+                    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
+                    width: 100%;
+
+                    &::placeholder {
                         color: gray;
                     }
                 }
-                button{
-                    padding: 15px;
+
+                button {
+                    padding: 12px;
                     border: none;
                     background-color: #6D54B5;
                     color: white;
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: 500;
                     border-radius: 5px;
-                    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
+                    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
                     cursor: pointer;
+                    width: 100%;
                 }
             }
         }
     }
 }
 
-@media screen and (max-width: 360px) {
-    .formBody{
-        .formContainer{
-            img{
+@media screen and (max-width: 650px) {
+    .formBody {
+        .formContainer {
+            img {
                 display: none;
             }
-            .formItems{
-                width: 300px;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .formBody {
+        .formContainer {
+            flex-direction: column;
+            padding: 15px;
+
+            .formItems {
+                padding: 20px;
+                width: 100%;
             }
+        }
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .formBody {
+        .formContainer {
+            padding: 10px;
+        }
+
+        .formItems {
+            padding: 15px;
+            width: 100%;
         }
     }
 }

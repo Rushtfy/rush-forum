@@ -1,18 +1,24 @@
 import { faHouse, faMessage, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { collection, getDocs } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // Import useLocation
+import { useLocation, useNavigate } from 'react-router-dom'; // Import useLocation
+import { db } from '../../firebase';
 import { AuthContext } from '../context/AuthContext';
 import './sidebar.scss';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase';
 
 const Sidebar = () => {
     const navigate = useNavigate();
-    const location = useLocation(); // Get current route
+    const location = useLocation();
     const { currentUser } = useContext(AuthContext);
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [tags, setTags] = useState(new Set());
+
+    const goCategoriesPostPage = (tag) => {
+        navigate(`/category/${tag}`);
+        window.location.reload();
+    }
 
     useEffect(() => {
         if (!currentUser.uid) return;
@@ -21,18 +27,29 @@ const Sidebar = () => {
             try {
                 const querySnapshot = await getDocs(collection(db, "userPosts"));
                 let postsArray = [];
-
+                let tagsSet = new Set();
                 querySnapshot.forEach((doc) => {
-                    postsArray.push(...Object.values(doc.data()));
+                    const userPosts = Object.values(doc.data());
+                    postsArray.push(...userPosts);
+
+                    userPosts.forEach((post) => {
+                        if (post.tags) {
+                            post.tags.forEach((tag) => {
+                                tagsSet.add(tag);
+                            });
+                        }
+                    });
                 });
 
                 setPosts(postsArray);
+                setTags(tagsSet);
                 setLoading(false);
             } catch (error) {
                 console.log("Something went wrong:", error);
                 setLoading(false);
             }
         }
+
         currentUser.uid && getCategories();
     }, [currentUser.uid]);
 
@@ -72,12 +89,8 @@ const Sidebar = () => {
                             <li key={index} className="skeletonTag"></li>
                         ))
                     ) : (
-                        posts && posts.map((item, index) => (
-                            <React.Fragment key={index}>
-                                {item.tags && item.tags.map((tag, tagIndex) => (
-                                    <li key={tagIndex}>{tag}</li>
-                                ))}
-                            </React.Fragment>
+                        [...tags].map((tag, index) => (
+                            <li key={index} onClick={() => goCategoriesPostPage(tag)}>{tag}</li>
                         ))
                     )}
                 </ul>

@@ -55,13 +55,6 @@
                 position: relative;
                 display: inline-block;
 
-                img {
-                    width: 50px;
-                    border-radius: 50px;
-                    cursor: pointer;
-                    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
-                }
-
                 .dropdownContent {
                     position: absolute;
                     background-color: #303233;
@@ -114,6 +107,10 @@
                     transition: .2s;
 
                     &:hover {
+                        background-color: hsl(248, 53%, 58%);
+                    }
+
+                    &.active {
                         background-color: hsl(248, 53%, 58%);
                     }
                 }

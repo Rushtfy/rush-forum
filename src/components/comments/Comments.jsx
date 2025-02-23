@@ -1,10 +1,10 @@
-import { faArrowDown, faArrowUp, faCommentDots, faEllipsis, faFlag, faBookmark, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faArrowUp, faEllipsis, faFlag, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useState } from 'react';
-import './comments.scss';
 import { deleteField, doc, getDoc, updateDoc } from 'firebase/firestore';
+import React, { useContext, useEffect, useState } from 'react';
 import { db } from '../../firebase';
 import { AuthContext } from '../context/AuthContext';
+import './comments.scss';
 
 const Comments = ({ item, post, setComments }) => {
 
@@ -12,6 +12,7 @@ const Comments = ({ item, post, setComments }) => {
     const [profilePicture, setProfilePicture] = useState("");
     const [dropdown, setDropdown] = useState(false);
     const { currentUser } = useContext(AuthContext);
+    const [userVote, setUserVote] = useState(null);
 
     const toggleDropdown = async (e) => {
         e.stopPropagation();
@@ -29,6 +30,47 @@ const Comments = ({ item, post, setComments }) => {
         }
     }
 
+    const handleVote = async (type) => {
+        if (!currentUser?.uid) return;
+        let updatedLikes = [...item.likes];
+        let updatedDislikes = [...item.dislikes];
+
+        if (type === 'upvote') {
+            if (userVote === 'up') {
+                updatedLikes = updatedLikes.filter(uid => uid !== currentUser.uid);
+                setUserVote(null);
+            } else {
+                if (userVote === 'down') {
+                    updatedDislikes = updatedDislikes.filter(uid => uid !== currentUser.uid);
+                }
+                updatedLikes.push(currentUser.uid);
+                setUserVote('up');
+            }
+        } else if (type === 'downvote') {
+            if (userVote === 'down') {
+                updatedDislikes = updatedDislikes.filter(uid => uid !== currentUser.uid);
+                setUserVote(null);
+            } else {
+                if (userVote === 'up') {
+                    updatedLikes = updatedLikes.filter(uid => uid !== currentUser.uid);
+                }
+                updatedDislikes.push(currentUser.uid);
+            }
+        }
+
+        try {
+            await updateDoc(doc(db, "userPosts", post.ownerUid), {
+                [`${post.id}.comments.${item.id}.likes`]: updatedLikes,
+                [`${post.id}.comments.${item.id}.dislikes`]: updatedDislikes
+            });
+            setComments((prev) => prev.map((comment) =>
+                comment.id === item.id ? { ...comment, likes: updatedLikes, dislikes: updatedDislikes } : comment
+            ));
+        } catch (error) {
+            console.log("Error updating vote:", error);
+        }
+    };
+
     useEffect(() => {
         const getName = async () => {
             if (!item?.senderUid) return;
@@ -45,6 +87,14 @@ const Comments = ({ item, post, setComments }) => {
         currentUser?.uid && getName();
     }, [currentUser?.uid, item?.senderUid]);
 
+    useEffect(() => {
+        if (item.likes.includes(currentUser?.uid)) {
+            setUserVote('up');
+        } else if (item.dislikes && item.dislikes.includes(currentUser?.uid)) {
+            setUserVote('down');
+        }
+    }, [item.likes, item.dislikes, currentUser?.uid]);
+
     return (
         <div className='commentBody'>
             <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
@@ -59,7 +109,6 @@ const Comments = ({ item, post, setComments }) => {
                         {dropdown && (
                             <div className="dropdownContent">
                                 <p><FontAwesomeIcon icon={faFlag} />Report</p>
-                                <p><FontAwesomeIcon icon={faBookmark} />Save</p>
                                 {item.senderUid === currentUser?.uid && (
                                     <p onClick={handleDelete}><FontAwesomeIcon icon={faTrash} />Delete</p>
                                 )}
@@ -70,9 +119,17 @@ const Comments = ({ item, post, setComments }) => {
                 <div className='discussionText' dangerouslySetInnerHTML={{ __html: item.content }}></div>
                 <div className='discussionStatistics'>
                     <div className='voteCounter'>
-                        <FontAwesomeIcon icon={faArrowUp} />
+                        <FontAwesomeIcon
+                            icon={faArrowUp}
+                            className={userVote === 'up' ? 'active' : ''}
+                            onClick={() => handleVote('upvote')}
+                        />
                         <p>{item.likes.length}</p>
-                        <FontAwesomeIcon icon={faArrowDown} />
+                        <FontAwesomeIcon
+                            icon={faArrowDown}
+                            className={userVote === 'down' ? 'active' : ''}
+                            onClick={() => handleVote('downvote')}
+                        />
                     </div>
                 </div>
             </div>
@@ -80,4 +137,4 @@ const Comments = ({ item, post, setComments }) => {
     )
 }
 
-export default Comments
+export default Comments;

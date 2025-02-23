@@ -74,7 +74,7 @@ const StartDiscussion = () => {
                     "content": content,
                     "likes": [],
                     "dislikes": [],
-                    "comments": [],
+                    "comments": {},
                     "tags": tags,
                     "time": currDate + " " + currTime
                 },
