@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import './messageModel.scss';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { ChatContext } from '../context/ChatContext';
+import './messageModel.scss';
 
 const MessageModel = ({ message }) => {
     const { currentUser } = useContext(AuthContext);

@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import './register.scss'
-import hill from '../../assets/hill (2).png'
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, db } from "../../firebase"
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc } from "firebase/firestore";
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import hill from '../../assets/hill (2).png';
+import { auth, db } from "../../firebase";
+import './register.scss';
 
 const Register = () => {
 
@@ -28,7 +28,7 @@ const Register = () => {
             await setDoc(doc(db, "userPosts", auth.currentUser.uid), {});
             await setDoc(doc(db, "userChats", auth.currentUser.uid), {});
             navigate('/');
-        } catch(error) {
+        } catch (error) {
             setError(true);
         }
     }
@@ -45,9 +45,9 @@ const Register = () => {
                         <input type="email" placeholder='Email' />
                         <input type="password" placeholder='Password' />
                         <button>Sign Up</button>
-                        {error && <span style={{color:"red"}}>Something went wrong</span>}
+                        {error && <span style={{ color: "red" }}>Something went wrong</span>}
                     </form>
-                    <p>Already have an account? <Link style={{color:'#6D54B5'}} to="/login">Log in</Link></p>
+                    <p>Already have an account? <Link style={{ color: '#6D54B5' }} to="/login">Log in</Link></p>
                 </div>
             </div>
         </div>

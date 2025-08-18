@@ -1,9 +1,10 @@
-import { faArrowRightFromBracket, faGear, faUser, faMessage, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightFromBracket, faGear, faMessage, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { signOut } from 'firebase/auth';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import defUser from '../../assets/default_user.jpg';
 import { auth, db } from '../../firebase';
 import { AuthContext } from '../context/AuthContext';
 import './header.scss';
@@ -169,7 +170,7 @@ const Header = () => {
 
                 <div className={`dropdownAndImage ${dropdown ? "open" : ""}`} ref={dropdownRef}>
                     <img
-                        src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"}
+                        src={profilePicture || defUser}
                         alt="profile"
                         onClick={toggleDropdown}
                     />

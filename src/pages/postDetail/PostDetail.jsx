@@ -1,11 +1,12 @@
 import { faArrowDown, faArrowUp, faBookmark, faCommentDots, faEllipsis, faFlag, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { arrayRemove, arrayUnion, collection, deleteField, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuid } from "uuid";
+import defUser from '../../assets/default_user.jpg';
 import Comments from '../../components/comments/Comments';
 import { AuthContext } from '../../components/context/AuthContext';
 import Layout from '../../components/layout/Layout';
@@ -262,7 +263,7 @@ const PostDetail = () => {
         <Layout>
             <div className='containerPostDetail'>
                 <div className='imageAndDiscussion'>
-                    <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
+                    <img src={profilePicture || defUser} alt="profile picture" />
                     <div className='discussionHolder'>
                         <div className='nameTimeIcon'>
                             <div className='nameAndTime'>

@@ -1,8 +1,9 @@
 import { faArrowDown, faArrowUp, faCommentDots, faReply } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import defUser from '../../assets/default_user.jpg';
 import { db } from '../../firebase';
 import { AuthContext } from '../context/AuthContext';
 import './discussionModel.scss';
@@ -102,7 +103,7 @@ const DiscussionModel = ({ item }) => {
             <div className="dicussionContainer">
                 <div className="imageAndDiscussion">
                     <img
-                        src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"}
+                        src={profilePicture || defUser}
                         alt="profile"
                         onClick={(e) => goProfile(e)}
                     />

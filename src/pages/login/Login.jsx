@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import '../register/register.scss';
-import hill from '../../assets/hill (1).png';
-import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase';
-import { getDoc, doc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import hill from '../../assets/hill (1).png';
+import { auth, db } from '../../firebase';
+import '../register/register.scss';
 
 const Login = () => {
     const [error, setError] = useState(false);

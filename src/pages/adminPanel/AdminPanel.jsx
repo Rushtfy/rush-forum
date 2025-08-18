@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import { faChartLine, faClipboard, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUsers, faClipboard, faChartLine } from "@fortawesome/free-solid-svg-icons";
-import { db } from "../../firebase";
-import { collection, getDocs, doc, updateDoc, getDoc, deleteField } from "firebase/firestore";
-import './adminPanel.scss';
+import { collection, deleteField, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import defUser from '../../assets/default_user.jpg';
 import { AuthContext } from "../../components/context/AuthContext";
+import { db } from "../../firebase";
+import './adminPanel.scss';
 
 const AdminPanel = () => {
     const { currentUser } = useContext(AuthContext);
@@ -25,7 +26,7 @@ const AdminPanel = () => {
                     navigate('/');
                     return;
                 }
-                
+
                 fetchUsers();
                 fetchPosts();
                 fetchAnalytics();
@@ -140,7 +141,7 @@ const AdminPanel = () => {
                                 {users.map((user) => (
                                     <tr key={user.uid}>
                                         <td>{user.displayName}</td>
-                                        <td><img src={user.photoURL || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="Profile" /></td>
+                                        <td><img src={user.photoURL || defUser} alt="Profile" /></td>
                                         <td>{user.email}</td>
                                         <td>{user.uid}</td>
                                         <td>{user.status || "active"}</td>

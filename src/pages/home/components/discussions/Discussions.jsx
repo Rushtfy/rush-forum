@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../../../components/context/AuthContext'
-import { db } from '../../../../firebase';
 import { arrayUnion, collection, doc, onSnapshot, updateDoc } from 'firebase/firestore';
-import './discussions.scss'
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../../../components/context/AuthContext';
 import DiscussionModel from '../../../../components/discussionModel/DiscussionModel';
+import { db } from '../../../../firebase';
+import './discussions.scss';
 
 const Discussions = () => {
 
@@ -67,18 +67,9 @@ const Discussions = () => {
 
     return (
         <div className='discussions'>
-            {/* <div>
-                {error && <p>Something went wrong</p>}
-                <p>{currentUser.displayName}</p>
-                <p>{currentUser.email}</p>
-                <form onSubmit={handleSubmit}>
-                    <input type="text" placeholder='Post Content' />
-                    <button>Send Post</button>
-                </form>
-            </div> */}
             <div>
                 {posts && posts.map((item, index) =>
-                    <DiscussionModel key={index} item={item}/>
+                    <DiscussionModel key={index} item={item} />
                 )}
             </div>
         </div>

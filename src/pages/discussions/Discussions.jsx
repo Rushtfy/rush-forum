@@ -1,12 +1,12 @@
-import { collection, getDocs, getDoc, doc } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import { signOut } from 'firebase/auth';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../components/context/AuthContext';
 import DiscussionModel from '../../components/discussionModel/DiscussionModel';
 import Layout from '../../components/layout/Layout';
 import { auth, db } from '../../firebase';
 import './discussions.scss';
-import { useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
 
 const Discussions = () => {
     const { currentUser } = useContext(AuthContext);

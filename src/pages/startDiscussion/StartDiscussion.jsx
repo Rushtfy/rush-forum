@@ -1,5 +1,5 @@
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
-import React, { useContext, useState } from 'react';
+import { doc, updateDoc } from 'firebase/firestore';
+import { useContext, useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { useNavigate } from 'react-router-dom';

@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
+import { EmailAuthProvider, reauthenticateWithCredential, updateEmail, updatePassword, updateProfile } from 'firebase/auth';
+import { doc, updateDoc } from 'firebase/firestore';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../components/context/AuthContext';
-import './settings.scss';
-import { updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, updateProfile } from 'firebase/auth';
 import Layout from '../../components/layout/Layout';
 import { db } from '../../firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import './settings.scss';
 
 const Settings = () => {
     const { currentUser } = useContext(AuthContext);

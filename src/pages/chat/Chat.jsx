@@ -1,15 +1,16 @@
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 import { arrayUnion, collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, setDoc, Timestamp, updateDoc, where } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { v4 as uuid } from "uuid";
+import defUser from '../../assets/default_user.jpg';
 import { AuthContext } from '../../components/context/AuthContext';
+import { ChatContext } from '../../components/context/ChatContext';
 import Layout from '../../components/layout/Layout';
+import MessageModel from '../../components/messageModel/MessageModel';
 import { db } from '../../firebase';
 import './chat.scss';
-import { ChatContext } from '../../components/context/ChatContext';
-import MessageModel from '../../components/messageModel/MessageModel';
-import { v4 as uuid } from "uuid";
-import axios from 'axios';
 
 const Chat = () => {
     const [username, setUsername] = useState("");
@@ -102,7 +103,7 @@ const Chat = () => {
                         headers: { 'Content-Type': 'multipart/form-data' },
                     }
                 );
-                
+
                 await updateDoc(doc(db, "chats", data.chatId), {
                     "messages": arrayUnion({
                         "id": uuid(),
@@ -183,7 +184,7 @@ const Chat = () => {
                             <input type="text" placeholder='Find a user' onKeyDown={handleKey} onChange={(e) => setUsername(e.target.value)} />
                             {user && (
                                 <div className='user' onClick={handleSelect}>
-                                    <img src={user?.photoURL ? user?.photoURL : "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
+                                    <img src={user?.photoURL ? user?.photoURL : defUser} alt="profile picture" />
                                     <p>{user?.displayName}</p>
                                 </div>
                             )}
@@ -191,7 +192,7 @@ const Chat = () => {
                         <div className='chats'>
                             {Object.entries(chats)?.sort((a, b) => b[1].date - a[1].date).map(chat => (
                                 <div className='userChat' key={chat[0]} onClick={() => handleSelectUser(chat[1].userInfo)}>
-                                    <img src={chat[1].userInfo.photoURL ? chat[1].userInfo.photoURL : "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
+                                    <img src={chat[1].userInfo.photoURL ? chat[1].userInfo.photoURL : defUser} alt="profile picture" />
                                     <div className='userChatInfo'>
                                         <span>{chat[1].userInfo.displayName}</span>
                                         <p>{chat[1].lastMessage?.text}</p>

@@ -1,7 +1,8 @@
 import { faArrowDown, faArrowUp, faEllipsis, faFlag, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { deleteField, doc, getDoc, updateDoc } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import defUser from '../../assets/default_user.jpg';
 import { db } from '../../firebase';
 import { AuthContext } from '../context/AuthContext';
 import './comments.scss';
@@ -97,7 +98,7 @@ const Comments = ({ item, post, setComments }) => {
 
     return (
         <div className='commentBody'>
-            <img src={profilePicture || "https://i.pinimg.com/474x/65/25/a0/6525a08f1df98a2e3a545fe2ace4be47.jpg"} alt="profile picture" />
+            <img src={profilePicture || defUser} alt="profile picture" />
             <div className='commentHolder'>
                 <div className='nameTimeIcon'>
                     <div className='nameAndTime'>

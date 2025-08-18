@@ -75,6 +75,7 @@
 
             .chats {
                 width: max-content;
+
                 .userChat {
                     display: flex;
                     align-items: center;
@@ -116,7 +117,7 @@
                 display: flex;
                 align-items: center;
 
-                p{
+                p {
                     color: white;
                     font-size: 20px;
                     font-weight: 500;
@@ -186,6 +187,7 @@
 @media screen and (max-width: 768px) {
     .chatSidebar {
         width: 70px !important;
+
         .chatSearchUser {
             width: 70px !important;
         }

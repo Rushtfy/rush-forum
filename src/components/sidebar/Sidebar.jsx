@@ -1,8 +1,8 @@
 import { faHouse, faMessage, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { collection, getDocs } from 'firebase/firestore';
-import React, { useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'; // Import useLocation
+import { useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
 import { AuthContext } from '../context/AuthContext';
 import './sidebar.scss';
@@ -62,19 +62,19 @@ const Sidebar = () => {
                         <span className="front"> Start a new Discussion </span>
                     </button>
                     <ul>
-                        <li 
-                            className={location.pathname === "/" ? "active" : ""} 
+                        <li
+                            className={location.pathname === "/" ? "active" : ""}
                             onClick={() => navigate("/")}
                         >
                             <FontAwesomeIcon icon={faHouse} />Home
                         </li>
-                        <li 
+                        <li
                             className={location.pathname === "/following" ? "active" : ""}
                             onClick={() => navigate("/following")}
                         >
                             <FontAwesomeIcon icon={faUsers} />Following
                         </li>
-                        <li 
+                        <li
                             className={location.pathname === "/chat" ? "active" : ""}
                             onClick={() => navigate("/chat")}
                         >
