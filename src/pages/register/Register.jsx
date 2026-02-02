@@ -47,7 +47,7 @@ const Register = () => {
                         <button>Sign Up</button>
                         {error && <span style={{ color: "red" }}>Something went wrong</span>}
                     </form>
-                    <p>Already have an account? <Link style={{ color: '#6D54B5' }} to="/login">Log in</Link></p>
+                    <p>Already have an account? <Link to="/login">Log in</Link></p>
                 </div>
             </div>
         </div>

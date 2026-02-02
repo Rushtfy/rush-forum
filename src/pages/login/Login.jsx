@@ -48,7 +48,7 @@ const Login = () => {
                         <button>Sign in</button>
                         {error && <span style={{ color: "red" }}>Something went wrong</span>}
                     </form>
-                    <p>Don't have an account? <Link style={{ color: '#6D54B5' }} to="/register">Create One</Link></p>
+                    <p>Don't have an account? <Link to="/register">Create One</Link></p>
                 </div>
             </div>
         </div>
