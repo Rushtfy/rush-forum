@@ -1,176 +1,231 @@
+:root {
+    --dm-panel: var(--pf-panel);
+    --dm-panel-2: var(--pf-panel-2);
+    --dm-border: var(--pf-border);
+    --dm-text: var(--pf-text);
+    --dm-muted: var(--pf-muted);
+    --dm-brand: var(--pf-brand);
+    --dm-ring: var(--pf-ring);
+}
+
 .individualDiscussion {
-    border: 1px solid rgb(75, 75, 75);
-    border-radius: 20px;
-    padding: 15px;
-    margin: 15px 0;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.7);
-    transition: ease-out .3s;
-    cursor: pointer;
+    position: relative;
+    width: 100%;
+    display: block;
+    color: var(--dm-text);
+    margin-top: 10px;
+    backdrop-filter: blur(15px);
+    z-index: 10;
 
     .dicussionContainer {
         display: flex;
-        align-items: start;
+        align-items: center;
         justify-content: space-between;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid var(--dm-border);
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .015));
+        transition: transform 120ms ease, border-color 160ms ease;
+        cursor: pointer;
 
-        .imageAndDiscussion {
-            display: flex;
-            align-items: start;
-            gap: 10px;
+        &:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, .14);
+        }
+    }
 
-            img {
-                width: 50px;
-                height: 50px;
-                border-radius: 50px;
+    .imageAndDiscussion {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        align-items: start;
+        gap: 12px;
+
+        img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--dm-border);
+            background: #0f1522;
+        }
+
+        .discussionHolder {
+            display: grid;
+            gap: 6px;
+
+            .nameAndTime {
+                display: flex;
+                align-items: baseline;
+                gap: 8px;
+
+                .displayName {
+                    background: transparent;
+                    border: none;
+                    padding: 0;
+                    color: var(--dm-text);
+                    font-weight: 800;
+                    font-size: 14px;
+                    cursor: pointer;
+                    border-radius: 6px;
+
+                    &:focus-visible {
+                        outline: none;
+                        box-shadow: 0 0 0 3px var(--dm-ring);
+                    }
+                }
+
+                .skeletonName {
+                    width: 90px;
+                    height: 14px;
+                    border-radius: 6px;
+                    background: linear-gradient(90deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .03), rgba(255, 255, 255, .06));
+                    animation: dm-skel 1.2s infinite linear;
+                }
+
+                .timeStamp {
+                    color: var(--dm-muted);
+                    font-size: 12px;
+                }
             }
 
-            .discussionHolder {
+            .discussionText {
+                margin: 0;
+                font-weight: 800;
+                font-size: 16px;
+                color: #c7c2ff;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .discussionStatistics {
                 display: flex;
-                flex-direction: column;
-                justify-content: start;
-                gap: 5px;
+                align-items: center;
+                gap: 14px;
+                margin-top: 4px;
 
-                .nameAndTime {
-                    display: flex;
+                .voteCounter {
+                    display: inline-flex;
                     align-items: center;
-                    gap: 10px;
+                    gap: 8px;
 
-                    span {
-                        color: gray;
-                        font-size: 13px;
-                    }
-
-                    .displayName {
-                        color: hsl(248, 53%, 58%);
-                    }
-                }
-
-                .discussionText {
-                    font-size: 18px;
-                    margin-bottom: 5px;
-                    word-break: break-all;
-                    word-spacing: normal;
-                    color: white;
-                }
-
-                .discussionStatistics {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    color: gray;
-                    font-size: 13px;
-
-                    p {
-                        display: flex;
+                    .voteBtn {
+                        display: inline-flex;
                         align-items: center;
-                        font-weight: 500;
-                    }
-
-                    .voteCounter {
-                        display: flex;
-                        gap: 10px;
-                        background-color: #303233;
-                        padding: 5px 10px;
-                        border-radius: 20px;
-                        color: white;
-
-                        svg {
-                            font-size: 17px;
-                            padding: 5px;
-                            border-radius: 8rem;
-                            padding: 5px 8px;
-                            cursor: pointer;
-                            transition: .2s;
-
-                            &:hover {
-                                background-color: #424446;
-                            }
-                        }
-
-                        .liked{
-                            background-color: hsl(248, 53%, 58%);
-                        }
-
-                        p {
-                            font-size: 14px;
-                        }
-                    }
-
-                    .commentCounter {
-                        display: flex;
-                        gap: 5px;
-                        background-color: #303233;
-                        padding: 5px 10px;
-                        border-radius: 20px;
-                        font-size: 14px;
-                        color: white;
-                        box-shadow: inset 0 0 0 0 #725AC1;
-                        transition: ease-in-out 0.5s;
-
-                        svg {
-                            font-size: 17px;
-                            padding: 5px;
-                            border-radius: 20px;
-                        }
+                        justify-content: center;
+                        width: 28px;
+                        height: 28px;
+                        border-radius: 8px;
+                        border: 1px solid var(--dm-border);
+                        background: var(--dm-panel);
+                        color: var(--dm-text);
+                        cursor: pointer;
+                        transition: transform 120ms ease, border-color 160ms ease, background 120ms ease;
 
                         &:hover {
-                            box-shadow: inset 0 -100px 0 0 #725AC1;
+                            transform: translateY(-1px);
+                            border-color: rgba(255, 255, 255, .16);
+                        }
+
+                        &:focus-visible {
+                            outline: none;
+                            box-shadow: 0 0 0 3px var(--dm-ring);
+                        }
+
+                        &:disabled {
+                            opacity: .8;
+                            cursor: default;
+                        }
+
+                        &.active {
+                            background: #533c7a;
+                            border-color: rgba(122, 103, 255, .35);
                         }
                     }
+
+                    .likeCount {
+                        min-width: 18px;
+                        text-align: center;
+                        font-weight: 700;
+                        color: var(--dm-text);
+                    }
+                }
+
+                .commentCounter {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    color: var(--dm-muted);
+                    font-size: 13px;
                 }
             }
-        }
 
-        button {
-            background-color: #303233;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 7px 13px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
-            box-shadow: inset 0 0 0 0 #725AC1;
-            transition: ease-in-out 0.5s;
-            cursor: pointer;
-
-            &:hover {
-                box-shadow: inset 0 -100px 0 0 #725AC1;
+            .discussionPreview {
+                margin: 0;
+                color: var(--dm-text);
+                opacity: .88;
+                font-size: 14px;
+                line-height: 1.6;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                word-break: break-word;
             }
         }
     }
 
-    &:hover {
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 1);
-    }
-}
+    .replyBtn {
+        background: transparent;
+        color: var(--dm-text);
+        border: 1px solid var(--dm-border);
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: transform 120ms ease, border-color 160ms ease;
 
-.skeletonName {
-    background-image: linear-gradient(90deg,
-            #444 0px,
-            rgba(160, 160, 160, 0.9) 40px,
-            #444 80px);
-    background-size: 300%;
-    background-position: 100% 0;
-    height: 15px;
-    width: 70px;
-    border-radius: .8rem;
-    animation: shimmer 1.5s infinite;
-}
+        &:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, .18);
+        }
 
-@media screen and (max-width: 360px) {
-    .individualDiscussion {
-        .dicussionContainer {
-            button {
-                display: none;
-            }
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--dm-ring);
         }
     }
 }
 
-@keyframes shimmer {
-    to {
-        background-position: -100% 0;
+@keyframes dm-skel {
+    0% {
+        background-position: 0% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@media (max-width: 560px) {
+    .individualDiscussion .dicussionContainer {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .individualDiscussion .imageAndDiscussion {
+        grid-template-columns: 36px 1fr;
+        gap: 10px;
+    }
+
+    .individualDiscussion .replyBtn {
+        padding: 8px 10px;
+        font-size: 13px;
     }
 }

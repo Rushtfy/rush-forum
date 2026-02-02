@@ -1,7 +1,7 @@
 # RushForum
 
 RushForum is a modern discussion forum web app built with **React**,
-**Firebase**, and **Cloudinary**.\
+**Firebase**, and **Cloudinary**.
 It allows users to create posts, comment, follow/unfollow each other,
 and manage their own profiles.
 
@@ -11,24 +11,24 @@ and manage their own profiles.
 
 ## 🚀 Features
 
--   🔐 **Authentication** with Firebase\
--   📝 **Create, edit, and delete posts**\
--   💬 **Comment system** with replies\
--   👍👎 **Upvote / Downvote posts**\
--   📌 **Save posts** for later\
+-   🔐 **Authentication** with Firebase
+-   📝 **Create, edit, and delete posts**
+-   💬 **Comment system** with replies
+-   👍👎 **Upvote / Downvote posts**
+-   📌 **Save posts** for later
 -   👤 **User profiles** with:
-    -   Profile picture upload (via Cloudinary)\
-    -   Followers & following system\
-    -   Tabs for posts, comments, saved, upvoted, and downvoted content\
+    -   Profile picture upload (via Cloudinary)
+    -   Followers & following system
+    -   Tabs for posts, comments, saved, upvoted, and downvoted content
 -   🎨 **Responsive design** (SCSS-based)
 
 ------------------------------------------------------------------------
 
 ## 🛠️ Tech Stack
 
--   **Frontend**: React, SCSS\
--   **Backend / Database**: Firebase (Firestore + Auth)\
--   **File Storage**: Cloudinary\
+-   **Frontend**: React, SCSS
+-   **Backend / Database**: Firebase (Firestore + Auth)
+-   **File Storage**: Cloudinary
 -   **Other Tools**: Axios, React Router
 
 ------------------------------------------------------------------------
@@ -64,12 +64,12 @@ and manage their own profiles.
 
 3.  **Configure Firebase**
 
-    -   Create a Firebase project\
+    -   Create a Firebase project
     -   Copy your config into `src/firebase.js`
 
 4.  **Configure Cloudinary**
 
-    -   Create a Cloudinary account\
+    -   Create a Cloudinary account
     -   Add your `cloud_name` and `upload_preset` in the upload code
 
 5.  **Start development server**
@@ -82,4 +82,4 @@ and manage their own profiles.
 
 ## 📜 License
 
-MIT License © 2025 [Rushtfy](https://github.com/Rushtfy)
+MIT License © 2026 [Rushtfy](https://github.com/Rushtfy)

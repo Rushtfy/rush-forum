@@ -1,88 +1,213 @@
+:root {
+    --st-panel: var(--pf-panel);
+    --st-panel-2: var(--pf-panel-2);
+    --st-border: var(--pf-border);
+    --st-text: var(--pf-text);
+    --st-muted: var(--pf-muted);
+    --st-brand: var(--pf-brand);
+    --st-brand-2: var(--pf-brand-2);
+    --st-ring: var(--pf-ring);
+}
+
 .settingsBody {
-    padding: 20px;
-    max-width: 600px;
+    width: 100%;
+    max-width: 760px;
     margin: 0 auto;
-    color: white;
+    padding: 20px;
+    color: var(--st-text);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .015));
+    border: 1px solid var(--st-border);
+    border-radius: 16px;
+    backdrop-filter: blur(15px);
+    margin-top: 20vh;
 
     h1 {
-        text-align: center;
-        margin-bottom: 20px;
+        margin: 0 0 14px 0;
+        font-size: clamp(20px, 2.6vw, 26px);
+        font-weight: 900;
+        letter-spacing: .2px;
+    }
+}
+
+.settings-section,
+.change-password-section {
+    background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .02));
+    border: 1px solid var(--st-border);
+    border-radius: 14px;
+    padding: 14px;
+    backdrop-filter: blur(6px);
+}
+
+.setting-item+.setting-item {
+    margin-top: 12px;
+}
+
+.setting-item {
+    display: grid;
+    gap: 6px;
+
+    label {
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--st-muted);
+        letter-spacing: .2px;
     }
 
-    .settings-section {
-        margin-bottom: 20px;
+    input {
+        width: 100%;
+        background: var(--st-panel);
+        color: var(--st-text);
+        border: 1px solid var(--st-border);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 14px;
+        outline: none;
+        transition: box-shadow 120ms ease, border-color 120ms ease;
 
-        .setting-item {
-            margin-bottom: 10px;
+        &::placeholder {
+            color: var(--st-muted);
+        }
 
-            label {
-                font-size: 14px;
-                margin-bottom: 5px;
-                display: block;
+        &:hover {
+            border-color: rgba(255, 255, 255, .14);
+        }
+
+        &:focus-visible {
+            border-color: rgba(255, 255, 255, .18);
+            box-shadow: 0 0 0 3px var(--st-ring);
+        }
+
+        &:disabled {
+            opacity: .8;
+            cursor: not-allowed;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, .01));
+        }
+    }
+}
+
+.settings-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 10px 0 16px;
+
+    button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: 0;
+        font-weight: 900;
+        font-size: 14px;
+        color: #fff;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--st-brand), var(--st-brand-2));
+        box-shadow: 0 8px 18px var(--st-ring);
+        transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
+
+        &:hover {
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: translateY(0);
+            filter: brightness(.96);
+        }
+
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--st-ring), 0 8px 18px var(--st-ring);
+        }
+
+        &:disabled {
+            opacity: .85;
+            cursor: default;
+            filter: saturate(.9);
+        }
+    }
+}
+
+.change-password-section {
+    margin-top: 12px;
+
+    h2 {
+        margin: 0 0 10px 0;
+        font-size: 16px;
+        font-weight: 900;
+        letter-spacing: .2px;
+    }
+
+    .change-password-input {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 1fr 1fr;
+
+        input {
+            background: var(--st-panel);
+            border-radius: 12px;
+            border: 1px solid var(--st-border);
+            padding: 10px 12px;
+            color: var(--st-text);
+            font-size: 14px;
+            outline: none;
+            transition: box-shadow 120ms ease, border-color 120ms ease;
+
+            &::placeholder {
+                color: var(--st-muted);
             }
 
-            input {
-                width: 100%;
-                padding: 8px;
-                font-size: 14px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                background-color: transparent;
-                color: white;
+            &:hover {
+                border-color: rgba(255, 255, 255, .14);
+            }
+
+            &:focus-visible {
+                border-color: rgba(255, 255, 255, .18);
+                box-shadow: 0 0 0 3px var(--st-ring);
             }
         }
     }
 
-    .settings-buttons {
-        text-align: center;
+    button {
+        margin-top: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: 0;
+        font-weight: 900;
+        font-size: 14px;
+        color: #fff;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--st-brand), var(--st-brand-2));
+        box-shadow: 0 8px 18px var(--st-ring);
+        transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
 
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #6A5BCD;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+        &:hover {
+            transform: translateY(-1px);
+        }
 
-            &:disabled {
-                background-color: #ccc;
-                cursor: not-allowed;
-            }
+        &:active {
+            transform: translateY(0);
+            filter: brightness(.96);
+        }
+
+        &:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--st-ring), 0 8px 18px var(--st-ring);
         }
     }
+}
 
-    .change-password-section {
-        margin-top: 40px;
+@media (max-width: 700px) {
+    .settingsBody {
+        padding: 16px;
+    }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .change-password-input {
-            margin-bottom: 20px;
-
-            input {
-                width: 100%;
-                padding: 8px;
-                font-size: 14px;
-                margin-bottom: 10px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                background-color: transparent;
-                color: white;
-            }
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #6A5BCD;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+    .change-password-section .change-password-input {
+        grid-template-columns: 1fr;
     }
 }

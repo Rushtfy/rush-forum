@@ -4,7 +4,11 @@ import Router from './router/Router';
 function App() {
 
   return (
-    <Router />
+    <div className='allItStarts'>
+      <div className='firstBlob'></div>
+      <div className='secondBlob'></div>
+      <Router />
+    </div>
   );
 }
 

@@ -82,18 +82,20 @@ const Sidebar = () => {
                         </li>
                     </ul>
                 </div>
-                <h2>Categories</h2>
-                <ul className='tags'>
-                    {loading ? (
-                        Array(8).fill().map((_, index) => (
-                            <li key={index} className="skeletonTag"></li>
-                        ))
-                    ) : (
-                        [...tags].map((tag, index) => (
-                            <li key={index} onClick={() => goCategoriesPostPage(tag)}>{tag}</li>
-                        ))
-                    )}
-                </ul>
+                <div className='tagContainer'>
+                    <h2>All Tags</h2>
+                    <ul className='tags'>
+                        {loading ? (
+                            Array(8).fill().map((_, index) => (
+                                <li key={index} className="skeletonTag"></li>
+                            ))
+                        ) : (
+                            [...tags].map((tag, index) => (
+                                <li key={index} onClick={() => goCategoriesPostPage(tag)}>{tag}</li>
+                            ))
+                        )}
+                    </ul>
+                </div>
             </div>
         </div>
     );

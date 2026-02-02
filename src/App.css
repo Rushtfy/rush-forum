@@ -43,6 +43,86 @@ body,
   color: #61dafb;
 }
 
+.allItStarts {
+  isolation: isolate;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.firstBlob,
+.secondBlob {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(0px);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.firstBlob {
+  width: 20vh;
+  height: 20vh;
+  left: 10%;
+  top: 16%;
+  background: radial-gradient(closest-side, rgba(124, 92, 255, 0.6), rgba(124, 92, 255, 0.5) 50%);
+  animation: blobDrift1 45s ease-in-out infinite alternate;
+}
+
+.secondBlob {
+  width: 15vh;
+  height: 15vh;
+  right: 8%;
+  bottom: 12%;
+  background: radial-gradient(closest-side, rgba(45, 17, 255, 0.6), rgb(45, 17, 255, 0.6) 50%);
+  animation: blobDrift2 45s ease-in-out infinite alternate;
+}
+
+@keyframes blobDrift1 {
+  0% {
+    transform: translate3d(-10vh, 30vh, 0) scale(1);
+  }
+
+  25% {
+    transform: translate3d(65vh, -20vh, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(130vh, 30vh, 0) scale(1);
+  }
+
+  75% {
+    transform: translate3d(65vh, 60vh, 0) scale(1);
+  }
+
+  100% {
+    transform: translate3d(-10vh, 30vh, 0) scale(1);
+  }
+}
+
+@keyframes blobDrift2 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate3d(-150vh, -60vh, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-150vh, 10vh, 0) scale(1);
+  }
+
+  75% {
+    transform: translate3d(10vh, -60vh, 0) scale(1);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

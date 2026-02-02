@@ -1,10 +1,13 @@
 :root {
-    --pf-border: rgba(255, 255, 255, 0.08);
-    --pf-text: #e7ecf3;
-    --pf-muted: #a6b0bf;
-    --pf-brand: #6a5bcd;
-    --pf-brand-2: #7c5cff;
-    --pf-ring: rgba(122, 103, 255, 0.8);
+  --pf-bg: #0b0f17;
+  --pf-panel: #141b2b;
+  --pf-panel-2: #1a2235;
+  --pf-border: rgba(255,255,255,0.08);
+  --pf-text: #e7ecf3;
+  --pf-muted: #a6b0bf;
+  --pf-brand: #6a5bcd;
+  --pf-brand-2: #7c5cff;
+  --pf-ring: rgba(122, 103, 255, 0.35);
 }
 
 .containerProfileNav {
@@ -24,7 +27,7 @@
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
         border: 1px solid var(--pf-border);
         border-radius: 18px;
-        backdrop-filter: blur(6px);
+        backdrop-filter: blur(15px);
         max-height: 35vh;
 
         .userCredentials {
@@ -87,7 +90,7 @@
                 font-size: 14px;
                 font-weight: 700;
                 transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
-                box-shadow: 0 6px 18px rgba(122, 103, 255, 0.35);
+                box-shadow: 0 6px 18px var(--pf-ring);
                 outline: none;
                 display: inline-flex;
                 align-items: center;
@@ -159,7 +162,7 @@
 
     .profileContent {
         margin-top: 16px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+        background: var(--pf-panel-2);
         border: 1px solid var(--pf-border);
         border-radius: 18px;
         padding: 16px;
@@ -177,7 +180,7 @@
             .scrollableContent {
                 border: 1px solid var(--pf-border);
                 border-radius: 14px;
-                background-color: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.015));
+                background-color: var(--pf-panel);
                 padding: 12px;
                 max-height: 42vh;
                 overflow: auto;
@@ -193,6 +196,7 @@
                 margin-bottom: 10px;
                 box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
                 transition: border-color 160ms ease, transform 120ms ease;
+                backdrop-filter: blur(15px);
 
                 &:hover {
                     transform: translateY(-1px);

@@ -1,7 +1,7 @@
 import { faArrowDown, faArrowUp, faCommentDots, faReply } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import defUser from '../../assets/default_user.jpg';
 import { db } from '../../firebase';
@@ -11,35 +11,33 @@ import './discussionModel.scss';
 const DiscussionModel = ({ item }) => {
     const { currentUser } = useContext(AuthContext);
     const [name, setName] = useState(null);
-    const [profilePicture, setProfilePicture] = useState("");
+    const [profilePicture, setProfilePicture] = useState('');
     const [liked, setLiked] = useState(false);
     const [disliked, setDisliked] = useState(false);
-    const [likeCount, setLikeCount] = useState(item.likes.length);
+    const [likeCount, setLikeCount] = useState(Array.isArray(item.likes) ? item.likes.length : 0);
+    const [voting, setVoting] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!item?.ownerUid) return;
-
+        if (!item?.ownerUid || !currentUser?.uid) return;
         const fetchUserDetails = async () => {
             try {
-                const userDoc = await getDoc(doc(db, "users", item.ownerUid));
+                const userDoc = await getDoc(doc(db, 'users', item.ownerUid));
                 if (userDoc.exists()) {
-                    setName(userDoc.data().displayName);
-                    setProfilePicture(userDoc.data().photoURL);
+                    const d = userDoc.data();
+                    setName(d?.displayName || 'User');
+                    setProfilePicture(d?.photoURL || '');
                 }
-                setLiked(item.likes.includes(currentUser.uid));
-                setDisliked(item.dislikes.includes(currentUser.uid));
+                setLiked(Array.isArray(item.likes) && item.likes.includes(currentUser.uid));
+                setDisliked(Array.isArray(item.dislikes) && item.dislikes.includes(currentUser.uid));
             } catch (error) {
-                console.log("Something went wrong:", error);
+                console.log('Something went wrong:', error);
             }
         };
-
-        currentUser?.uid && fetchUserDetails();
+        fetchUserDetails();
     }, [item, currentUser?.uid]);
 
-    const goDetail = () => {
-        navigate(`/postDetail/${item.ownerUid}/${item.id}`);
-    };
+    const goDetail = () => navigate(`/postDetail/${item.ownerUid}/${item.id}`);
 
     const goProfile = (e) => {
         e.stopPropagation();
@@ -48,40 +46,28 @@ const DiscussionModel = ({ item }) => {
 
     const handleVote = async (e, type) => {
         e.stopPropagation();
-    
-        if (!currentUser?.uid) return;
-    
-        const postDocRef = doc(db, "userPosts", item.ownerUid);
-        const postDoc = await getDoc(postDocRef);
-    
-        if (!postDoc.exists()) return alert("Something went wrong!");
-    
+        if (!currentUser?.uid || voting) return;
+        const postDocRef = doc(db, 'userPosts', item.ownerUid);
         try {
-            const postData = postDoc.data();
-            const postLikes = postData[item.id]?.likes || [];
-            const postDislikes = postData[item.id]?.dislikes || [];
-    
-            let updates = {};
-    
-            if (type === "like") {
-                if (disliked) {
-                    updates[`${item.id}.dislikes`] = arrayRemove(currentUser.uid);
-                    setDisliked(false);
-                }
+            setVoting(true);
+            const updates = {};
+            if (type === 'like') {
+                if (disliked) updates[`${item.id}.dislikes`] = arrayRemove(currentUser.uid);
                 if (liked) {
                     updates[`${item.id}.likes`] = arrayRemove(currentUser.uid);
                     setLiked(false);
-                    setLikeCount(likeCount - 1);
+                    setLikeCount((c) => Math.max(0, c - 1));
                 } else {
                     updates[`${item.id}.likes`] = arrayUnion(currentUser.uid);
                     setLiked(true);
-                    setLikeCount(likeCount + 1);
+                    setDisliked(false);
+                    setLikeCount((c) => c + 1);
                 }
-            } else if (type === "dislike") {
+            } else {
                 if (liked) {
                     updates[`${item.id}.likes`] = arrayRemove(currentUser.uid);
                     setLiked(false);
-                    setLikeCount(likeCount - 1);
+                    setLikeCount((c) => Math.max(0, c - 1));
                 }
                 if (disliked) {
                     updates[`${item.id}.dislikes`] = arrayRemove(currentUser.uid);
@@ -91,12 +77,24 @@ const DiscussionModel = ({ item }) => {
                     setDisliked(true);
                 }
             }
-    
             await updateDoc(postDocRef, updates);
-        } catch (error) {
-            alert("Something went wrong!");
+        } catch {
+            alert('Something went wrong!');
+        } finally {
+            setVoting(false);
         }
-    };    
+    };
+
+    const commentsCount = item?.comments ? Object.keys(item.comments).length : 0;
+
+    const contentPreview = useMemo(() => {
+        const raw = item?.content || '';
+        const el = typeof window !== 'undefined' ? document.createElement('div') : null;
+        if (!el) return '';
+        el.innerHTML = raw;
+        const text = (el.textContent || el.innerText || '').replace(/\s+\n/g, ' ').trim();
+        return text;
+    }, [item?.content]);
 
     return (
         <div className="individualDiscussion" onClick={goDetail} id={item.id}>
@@ -104,37 +102,55 @@ const DiscussionModel = ({ item }) => {
                 <div className="imageAndDiscussion">
                     <img
                         src={profilePicture || defUser}
-                        alt="profile"
-                        onClick={(e) => goProfile(e)}
+                        alt=""
+                        onClick={goProfile}
+                        loading="lazy"
                     />
                     <div className="discussionHolder">
                         <div className="nameAndTime">
-                            <div className="displayName" onClick={(e) => goProfile(e)}>{name || <div className="skeletonName"></div>}</div>
-                            <span>{item.time || "N/A"}</span>
+                            <button className="displayName" onClick={goProfile}>
+                                {name || <div className="skeletonName" />}
+                            </button>
+                            <span className="timeStamp">{item.time || 'N/A'}</span>
                         </div>
+
                         <p className="discussionText">{item.title}</p>
+                        {contentPreview ? <p className="discussionPreview">{contentPreview}</p> : null}
+
                         <div className="discussionStatistics">
-                            <div className="voteCounter">
-                                <FontAwesomeIcon
-                                    icon={faArrowUp}
-                                    className={liked ? "liked" : ""}
-                                    onClick={(e) => handleVote(e, "like")}
-                                />
-                                <p>{likeCount}</p>
-                                <FontAwesomeIcon
-                                    icon={faArrowDown}
-                                    className={disliked ? "liked" : ""}
-                                    onClick={(e) => handleVote(e, "dislike")}
-                                />
+                            <div className="voteCounter" aria-label="Voting controls">
+                                <button
+                                    className={`voteBtn up ${liked ? 'active' : ''}`}
+                                    onClick={(e) => handleVote(e, 'like')}
+                                    aria-pressed={liked}
+                                    disabled={voting}
+                                    title="Upvote"
+                                >
+                                    <FontAwesomeIcon icon={faArrowUp} />
+                                </button>
+
+                                <p className="likeCount">{likeCount}</p>
+
+                                <button
+                                    className={`voteBtn down ${disliked ? 'active' : ''}`}
+                                    onClick={(e) => handleVote(e, 'dislike')}
+                                    aria-pressed={disliked}
+                                    disabled={voting}
+                                    title="Downvote"
+                                >
+                                    <FontAwesomeIcon icon={faArrowDown} />
+                                </button>
                             </div>
-                            <p className="commentCounter">
+
+                            <p className="commentCounter" title="Comments">
                                 <FontAwesomeIcon icon={faCommentDots} />
-                                {Object.keys(item.comments).length}
+                                {commentsCount}
                             </p>
                         </div>
                     </div>
                 </div>
-                <button>
+
+                <button className="replyBtn" onClick={(e) => { e.stopPropagation(); goDetail(); }}>
                     <FontAwesomeIcon icon={faReply} />
                     Reply
                 </button>

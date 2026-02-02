@@ -53,7 +53,10 @@ const FollowPosts = () => {
     return (
         <Layout>
             <div className='followPostsContainer'>
-                <h1>Posts from Followed Users</h1>
+
+                <div className='titleMenu'>
+                    <h1>Posts from Followed Users</h1>
+                </div>
 
                 {loading ? (
                     <div>

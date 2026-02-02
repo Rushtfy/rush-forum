@@ -1,222 +1,322 @@
-.inputsField {
-    width: 100%;
-    height: 100%;
-    max-height: max-content;
-    padding: 40px;
-    display: flex;
-    align-items: start;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 100%;
+:root {
+    --sd-gap: 12px;
+    --sd-radius: 14px;
+    --sd-border: var(--pf-border);
+    --sd-panel: var(--pf-panel);
+    --sd-panel-2: var(--pf-panel-2);
+    --sd-text: var(--pf-text);
+    --sd-muted: var(--pf-muted);
+    --sd-brand: var(--pf-brand);
+    --sd-brand-2: var(--pf-brand-2);
+    --sd-ring: var(--pf-ring);
+}
 
-    .title {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        max-width: 550px;
-        margin-bottom: 20px;
+.startDiscussion {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+    color: var(--sd-text);
+
+    .formCard {
+        background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .02));
+        border: 1px solid var(--sd-border);
+        border-radius: var(--sd-radius);
+        padding: 16px;
+        backdrop-filter: blur(6px);
+    }
+
+    .formHeader {
+        margin-bottom: 10px;
 
         h1 {
-            color: white;
-            font-size: 1.8rem;
+            margin: 0 0 6px;
+            font-size: clamp(18px, 2.6vw, 24px);
+            font-weight: 800;
+            letter-spacing: .2px;
+            color: var(--sd-text);
         }
 
-        .tagInputBody {
-            border: 1px solid #444;
-            border-radius: 5px;
-            overflow: hidden;
-            color: white;
-            flex: 1;
-            margin-left: 20px;
-
-            .tagInputContainer {
-                .tagHolder {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 5px;
-                }
-
-                input {
-                    padding: 10px 5px;
-                    background-color: #111;
-                    color: white;
-                    width: 100%;
-                    border: none;
-                    outline: none;
-
-                    &::placeholder {
-                        color: #bbb;
-                    }
-                }
-
-                span {
-                    background-color: #303233;
-                    padding: 5px;
-                    border-radius: 5px;
-                }
-
-                button {
-                    margin-left: 5px;
-                    background-color: #424446;
-                    height: 20px;
-                    width: 20px;
-                    border-radius: 5px;
-                    color: white;
-                    border: none;
-                    cursor: pointer;
-                }
-            }
+        .helper {
+            margin: 0;
+            color: var(--sd-muted);
+            font-size: 13px;
         }
     }
 
-    .title-input-container {
+    .field {
+        display: grid;
+        gap: 8px;
+        margin-top: var(--sd-gap);
+
+        label {
+            font-weight: 700;
+            color: var(--sd-text);
+            font-size: 14px;
+        }
+    }
+
+    .labelRow {
         display: flex;
-        flex-direction: column;
-        width: 100%;
-        max-width: 550px;
+        align-items: baseline;
+        justify-content: space-between;
 
-        .input-wrapper {
-            width: 100%;
+        label {
+            margin: 0;
         }
 
-        .custom-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #444;
-            background: #111;
-            color: white;
-            border-radius: 15px;
-            font-size: 16px;
-            outline: none;
-            transition: border 0.2s ease-in-out;
-
-            &::placeholder {
-                color: #bbb;
-            }
-
-            &:focus {
-                border: 1px solid #6A5BCD;
-            }
-        }
-
-        .char-counter {
+        .charCount {
+            color: var(--sd-muted);
             font-size: 12px;
-            color: #888;
-            position: absolute;
-            right: 10px;
-            bottom: 8px;
+        }
+    }
+
+    .control {
+        width: 100%;
+        color: var(--sd-text);
+        background: var(--sd-panel);
+        border: 1px solid var(--sd-border);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 14px;
+        outline: none;
+        transition: box-shadow 120ms ease, border-color 120ms ease;
+
+        &::placeholder {
+            color: var(--sd-muted);
+        }
+
+        &:hover {
+            border-color: rgba(255, 255, 255, .14);
+        }
+
+        &:focus-visible {
+            border-color: rgba(255, 255, 255, .18);
+            box-shadow: 0 0 0 3px var(--sd-ring);
+        }
+    }
+
+    .tagInputBody {
+        background: var(--sd-panel-2);
+        border: 1px solid var(--sd-border);
+        border-radius: 12px;
+        padding: 8px 10px;
+
+        .tagInputContainer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+
+            .tagHolder {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+
+                span {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 6px 10px;
+                    border-radius: 999px;
+                    background: #0f1522;
+                    border: 1px solid var(--sd-border);
+                    font-size: 12px;
+                    color: var(--sd-text);
+
+                    button {
+                        appearance: none;
+                        background: transparent;
+                        border: none;
+                        color: var(--sd-muted);
+                        font-size: 12px;
+                        line-height: 1;
+                        cursor: pointer;
+                        border-radius: 6px;
+                        padding: 2px;
+
+                        &:hover {
+                            color: #fff;
+                        }
+
+                        &:focus-visible {
+                            outline: 0;
+                            box-shadow: 0 0 0 3px var(--sd-ring);
+                        }
+                    }
+                }
+            }
+
+            input {
+                flex: 1;
+                min-width: 160px;
+                background: transparent;
+                color: var(--sd-text);
+                border: none;
+                outline: none;
+                font-size: 14px;
+                padding: 6px 4px;
+
+                &::placeholder {
+                    color: var(--sd-muted);
+                }
+            }
         }
     }
 
     .editor-container {
-        color: #fff;
-        border-radius: 8px;
-        width: 100%;
-        max-width: 550px;
+        background: var(--sd-panel-2);
+        border: 1px solid var(--sd-border);
+        border-radius: var(--sd-radius);
+        padding: 12px;
 
-        .ql-toolbar {
-            background: #111;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-
-            .ql-fill {
-                fill: #bbb;
-            }
-
-            .ql-stroke {
-                stroke: #bbb;
-            }
-
-            .ql-active {
-                .ql-stroke {
-                    stroke: #6D54B5;
-                }
-            }
+        .ql-toolbar.ql-snow {
+            background: var(--sd-panel);
+            border: 1px solid var(--sd-border);
+            border-radius: 10px;
+            color: var(--sd-text);
         }
 
-        .ql-container {
-            background: #111;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            min-height: 150px;
+        .ql-container.ql-snow {
+            border: 1px solid var(--sd-border);
+            border-radius: 10px;
+            background: var(--sd-panel);
+            color: var(--sd-text);
+            min-height: 220px;
         }
 
         .ql-editor {
-            &::before {
-                color: #bbb !important;
-                font-style: italic;
-            }
+            font-size: 15px;
+            line-height: 1.6;
         }
 
-        .editor-buttons {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 10px;
+        .ql-stroke {
+            stroke: var(--sd-text);
+        }
 
-            button {
-                background: #333;
-                color: white;
-                padding: 8px 12px;
-                border: none;
-                border-radius: 5px;
+        .ql-fill {
+            fill: var(--sd-text);
+        }
+
+        .ql-picker {
+            color: var(--sd-text);
+        }
+
+        .ql-picker-options {
+            background: var(--sd-panel);
+            border-color: var(--sd-border);
+        }
+
+        .ql-picker-item:hover,
+        .ql-picker-item.ql-selected {
+            color: #fff;
+        }
+
+        .my-editor .ql-editor.ql-blank::before {
+            color: var(--sd-muted);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+
+            .btnPrimary,
+            .btnGhost {
+                padding: 10px 16px;
+                border-radius: 12px;
+                font-weight: 700;
+                font-size: 14px;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
                 cursor: pointer;
-                margin-left: 5px;
+                border: 1px solid transparent;
+                outline: none;
+                transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
+
+                &:focus-visible {
+                    box-shadow: 0 0 0 3px var(--sd-ring);
+                }
+
+                &:disabled {
+                    opacity: .8;
+                    filter: saturate(.9);
+                    cursor: default;
+                }
+            }
+
+            .btnPrimary {
+                background: linear-gradient(135deg, var(--sd-brand), var(--sd-brand-2));
+                color: #fff;
+                box-shadow: 0 6px 18px rgba(122, 103, 255, 0.35);
 
                 &:hover {
-                    background: #444;
+                    transform: translateY(-1px);
+                }
+
+                &:active {
+                    transform: translateY(0);
+                    filter: brightness(.96);
+                }
+            }
+
+            .btnGhost {
+                background: transparent;
+                color: var(--sd-text);
+                border-color: var(--sd-border);
+
+                &:hover {
+                    transform: translateY(-1px);
+                    border-color: rgba(255, 255, 255, .18);
                 }
             }
         }
     }
 }
 
-.startDiscussionBody {
-    height: 100%;
-    background-color: #212121;
+.startDiscussion .editor-container .actions .btnDanger {
+    background: transparent;
+    color: #ff8da0;
+    border: 1px solid rgba(255, 95, 109, 0.45);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
 
+    &:hover {
+        transform: translateY(-1px);
+        border-color: rgba(255, 95, 109, 0.7);
+    }
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px var(--sd-ring);
+    }
+
+    &:disabled {
+        opacity: .8;
+        filter: saturate(.9);
+        cursor: default;
+    }
+}
+
+
+@media (max-width: 600px) {
     .startDiscussion {
-        display: flex;
-        height: 100%;
-        flex-direction: column;
-    }
-}
+        padding: 12px;
 
-@media screen and (max-width: 768px) {
-    .inputsField {
-        padding: 20px;
-
-        .title {
-            flex-direction: column;
-            align-items: flex-start;
-            width: 100%;
-            margin-bottom: 15px;
-
-            .tagInputBody {
-                margin: 10px 0 0 0;
-            }
+        .formCard {
+            padding: 14px;
         }
 
-        .title-input-container {
-            width: 100%;
-        }
-
-        .editor-container {
-            width: 100%;
-        }
-    }
-}
-
-@media screen and (max-width: 360px) {
-    .inputsField {
-        padding: 20px;
-
-        .title-input-container {
-            width: 100%;
-        }
-
-        .editor-container {
-            width: 100%;
+        .actions {
+            gap: 6px;
         }
     }
 }
